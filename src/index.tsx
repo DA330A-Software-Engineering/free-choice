@@ -1,12 +1,44 @@
 import { createRoot } from 'react-dom/client';
 import { FC } from 'react';
 import "./index.css";
+import { Outlet, Routes, Navigate, BrowserRouter, Route } from "react-router-dom";
+import { useAuth } from "./contexts/AuthContext"
+import { DeviceContextProvider } from './contexts/DeviceContext';
+import { AuthenticationProvider } from './contexts/AuthContext';
+import DeviceContainerView from './views/DeviceContainer.view';
+import LoginView from './views/Login.view';
+import SignupView from './views/Signup.view';
+
+
+/** Creates a prive route wrapper, that check if its a authenticated user. router wrapper can also be used for restrict authenticated users from page using restricted variable */
+const PrivateRouteWrapper: FC<{restricted?: boolean, redirectTo: string}> = ({restricted = false, redirectTo}) => {
+  const auth = useAuth();
+  return ((auth.getUserData() !== null) === restricted) ? <Navigate to={redirectTo} /> : <Outlet />;
+};
+
 
 const App: FC = () => {
     return (
-        <>
-          <h1>Hello World</h1>
-        </>
+      <AuthenticationProvider>
+        <DeviceContextProvider>
+          <BrowserRouter>
+            <Routes>
+              
+              {/* Private Routes */}
+              <Route path='/' element={<PrivateRouteWrapper redirectTo='/login' />}>
+                <Route index element={<DeviceContainerView />} />
+              </Route>
+
+              {/* Restricted for authenticated users */}
+              <Route path="/" element={<PrivateRouteWrapper restricted={true} redirectTo='/' />}>
+                <Route path="login" element={<LoginView />} />
+                <Route path="signup" element={<SignupView />} />
+              </Route>
+
+            </Routes>
+          </BrowserRouter>
+        </DeviceContextProvider>
+      </AuthenticationProvider>
     )
 }
 
