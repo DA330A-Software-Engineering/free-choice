@@ -16,6 +16,7 @@
       "forceConsistentCasingInFileNames": true,
       "resolveJsonModule": true
     },
-    "include": ["src/**/*.tsx"],
-    "exclude": ["node_modules", ".vscode", "dist", "build"]
-  }
+    "exclude": [
+        "node_modules"
+    ]
+}

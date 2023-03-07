@@ -5,6 +5,13 @@ This is a software engineering project that utilizes React and Electron to devel
 ## Prerequisites
 Before you can start building this application, you need to have [Node.js](https://nodejs.org/en/download/) installed.
 
+After cloning the repo, add an `.env` file in the root folder and define the following variables.
+```
+API_ENDPOINT_AUTH = 
+API_ENDPOINT_LOGIN = 
+API_ENDPOINT_SIGNUP = 
+```
+
 ### Installation
 To install the dependencies, navigate to the root folder of the project and run the following command:
 ```
@@ -23,12 +30,8 @@ npm run dev-client
 
 ### Building a Production Executable
 
-#### Windows
 To build a production executable, navigate to the root folder of the project and run the following command:
 ```
 npm run build
 ```
 This command will build the React application and create an Electron distribution of the built React application.
-
-#### macOS and Linux
-Building a production executable for macOS and Linux is coming soon.
