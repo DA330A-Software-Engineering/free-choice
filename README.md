@@ -10,6 +10,14 @@ After cloning the repo, add an `.env` file in the root folder and define the fol
 API_ENDPOINT_AUTH = 
 API_ENDPOINT_LOGIN = 
 API_ENDPOINT_SIGNUP = 
+
+FIREBASE_CONFIG_apiKey = 
+FIREBASE_CONFIG_authDomain = 
+FIREBASE_CONFIG_databaseURL = 
+FIREBASE_CONFIG_projectId = 
+FIREBASE_CONFIG_storageBucket = 
+FIREBASE_CONFIG_messagingSenderId = 
+FIREBASE_CONFIG_appId = 
 ```
 
 ### Installation
