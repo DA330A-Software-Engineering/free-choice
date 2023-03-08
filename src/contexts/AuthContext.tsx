@@ -1,38 +1,43 @@
 import React, {createContext, useContext, FC, useEffect} from 'react';
 import useLocalStorage from '../utils/LocalStorage';
 
+
 // API ENDPOINTS, ARE DEFINED IN .env
 const API_ENDPOINT_AUTH = process.env.API_ENDPOINT_AUTH || '';
 const API_ENDPOINT_LOGIN = process.env.API_ENDPOINT_LOGIN || '';
 const API_ENDPOINT_SIGNUP = process.env.API_ENDPOINT_SIGNUP || '';
 
-/** Authentication methods callback */
-interface MethodCallBack { (data: Response): void; };
 
-/** User data definition */
-export interface userData { jwt: string };
+export interface IAPIResponse {
+    code: number
+    msg: string
+    token: string | null
+}
 
 /** Defines the AuthenticationContext */
 interface IAuthenticationContext {
-    getUserData: () => userData;
-    logout: (callback: MethodCallBack) => void,
-    login: (email: string, password: string, callback: MethodCallBack) => void,
-    signup: (email: string, firstname: string, lastname: string, password: string, callback: MethodCallBack) => void
+    logout: (callback: { (data: IAPIResponse): void; }) => void,
+    login: (email: string, password: string, callback: { (data: IAPIResponse): void; }) => void,
+    signup: (name: string, email: string, password: string, callback: { (data: IAPIResponse): void; }) => void,
+    getToken: () => string | null
 };
+
 
 /** Initiate the context */
 const AuthenticationContext = createContext<IAuthenticationContext>({
     login: () => null,
     logout: () => null,
     signup: () => null,
-    getUserData: () => ({} as any) as userData
+    getToken: () => null
 });
+
 
 /** Defines the custom AuthenticationProvider and its methods */
 export const AuthenticationProvider: FC<{children: React.ReactElement}> = ({children}) => {
 
+
     // Stores the user information
-    const [user, SetUser] = useLocalStorage("userData");
+    const [token, SetToken] = useLocalStorage("token");
 
     // On component load, verify the authentication
     useEffect(() => fetchUser(() => null), []);
@@ -41,23 +46,25 @@ export const AuthenticationProvider: FC<{children: React.ReactElement}> = ({chil
     const fetchUser = (callback: () => void) => {
         var success = false;
         var resp: Response;
-        fetch(API_ENDPOINT_AUTH as string)
-        .then(res => {
+        fetch(API_ENDPOINT_AUTH, {
+            method: 'GET',
+            headers: { 'x-auth-header': token },
+        }).then(res => {
             resp = res;
             if (res.status === 504) console.log('Unable to reach the backend, ' + res.statusText);
             success = res.ok;
             return res.json()
         })
         .then(data => {
-            console.log(data);
-            if(success) SetUser(data);
-            else SetUser(null);
+            if(success) SetToken(data.token);
+            else SetToken(null);
             callback();
         });
     }
 
+
     /** Login the user using email and password */
-    const login = (email: string, password: string, callback: MethodCallBack) => {
+    const login = (email: string, password: string, callback: { (data: IAPIResponse): void; }) => {
         fetch(API_ENDPOINT_LOGIN,
         {
             method: 'POST',
@@ -66,39 +73,66 @@ export const AuthenticationProvider: FC<{children: React.ReactElement}> = ({chil
                 "email": email,
                 "password": password
             })
-        }).then((res: Response) => callback(res));
+        }).then((res: Response) => resolveResponse(res, callback));
     };
 
+
     /** Signup a user */
-    const signup = (email: string, firstname: string, lastname: string, password: string, callback: MethodCallBack) => {
+    const signup = (name: string, email: string, password: string, callback: { (data: IAPIResponse): void; }) => {
         fetch(API_ENDPOINT_SIGNUP,
         {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
+                "name": name,
                 "email": email,
-                "firstName": firstname,
-                "lastName": lastname,
                 "password": password
             })
-        }).then((res: Response) => callback(res));
+        }).then((res: Response) => resolveResponse(res, callback));
     };
 
+
     /** Logout the authenticated user */
-    const logout = (callback: MethodCallBack) => {
+    const logout = (callback: { (data: IAPIResponse): void; }) => {
         fetch('/api/auth/logout')
         .then((res: Response) => {
-            SetUser(null);
-            callback(res);
+            SetToken(null);
+            resolveResponse(res, callback);
         });
     };
+
+
+    /** Resolve response and map it into an IAPIResponse */
+    const resolveResponse = (res: Response, callback: { (data: IAPIResponse): void; }) => {
+
+        // TODO: Make sure we phrase the data from the API correctly
+        // This is the only function we need to change
+
+        var apiResponse: IAPIResponse = {
+            code: res.status,
+            msg: '',
+            token: null
+        }
+
+        res.json().then(json => {
+            console.log(json)
+            apiResponse.token = json.token
+            apiResponse.msg = json.error as string
+        }).finally(() => {
+            if (apiResponse.code == 200) {
+                console.log(apiResponse.token)
+                SetToken(apiResponse.token)
+            }
+            callback(apiResponse)
+        });
+    }
 
     /** Data that is being passed down the context */
     const value = {
         login,
         logout,
         signup,
-        getUserData: () => user as userData
+        getToken: () => token as string
     }
 
     return (
