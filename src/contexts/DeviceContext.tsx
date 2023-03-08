@@ -8,7 +8,7 @@ import { getFirestore, doc, onSnapshot, DocumentSnapshot} from "firebase/firesto
 
 /** Interface for Devices */
 export interface IDevice {
-    id: number,
+    id: string,
     state: {},
     type: string
 }
@@ -47,7 +47,12 @@ export const DeviceContextProvider: FC<{children: React.ReactElement}> = ({child
         const db = getFirestore();
         const ref = doc(db, `devices/${deviceId}`)
         onSnapshot(ref, (snap: DocumentSnapshot) => {
-                onUpdate(snap.data() as IDevice)
+                const device: IDevice = {
+                    id: deviceId,
+                    state: snap.data()?.state,
+                    type: snap.data()?.type
+                }
+                onUpdate(device)
             }
         )
     }
