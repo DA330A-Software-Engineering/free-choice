@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import ToggleDevice from '../components/devices/ToggleDevice.cmpt';
+import ToggleDevice from '../devices/ToggleDevice.cmpt';
 
 /** Props for this component */
 type DeviceContainerProps = {

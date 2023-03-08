@@ -32,7 +32,7 @@ const DeviceContext = createContext<IDeviceContext>({
 export const DeviceContextProvider: FC<{children: React.ReactElement}> = ({children}) => {
 
     // Stores the lates version of the firebase data
-    const [data, SetData] = useLocalStorage("userData");
+    const [data, SetData] = useLocalStorage("deviceData");
 
     // On component mount
     useEffect(() => {
