@@ -6,17 +6,17 @@ export interface IFirebaseConfig {
     databaseURL: string,
     storageBucket: string,
     messagingSenderId: string,
-    appId: string
+    appId: string,
 };
 
 /** Firebase Configuration */
 // TODO: Add this to .env
 export const FirebaseConfig: IFirebaseConfig = {
-    apiKey: "AIzaSyAuwWteY_G2oNeECTVat__bdBiKDG4wapA",
-    authDomain: "se-project-6d6d4.firebaseapp.com",
-    databaseURL: "https://se-project-6d6d4-default-rtdb.firebaseio.com",
-    projectId: "se-project-6d6d4",
-    storageBucket: "se-project-6d6d4.appspot.com",
-    messagingSenderId: "175833709354",
-    appId: "1:175833709354:web:2c735a14ab325cc73bbc53"
-  };
+    apiKey: process.env.FIREBASE_CONFIG_apiKey || '',
+    authDomain: process.env.FIREBASE_CONFIG_authDomain || '',
+    databaseURL: process.env.FIREBASE_CONFIG_databaseURL || '',
+    projectId: process.env.FIREBASE_CONFIG_projectId || '',
+    storageBucket: process.env.FIREBASE_CONFIG_storageBucket || '',
+    messagingSenderId: process.env.FIREBASE_CONFIG_messagingSenderId || '',
+    appId: process.env.FIREBASE_CONFIG_appId || ''
+}
