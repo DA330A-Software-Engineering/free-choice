@@ -10,6 +10,7 @@ After cloning the repo, add an `.env` file in the root folder and define the fol
 API_ENDPOINT_AUTH = 
 API_ENDPOINT_LOGIN = 
 API_ENDPOINT_SIGNUP = 
+API_ENDPOINT_UPDATE_DEVICE =
 
 FIREBASE_CONFIG_apiKey = 
 FIREBASE_CONFIG_authDomain = 
