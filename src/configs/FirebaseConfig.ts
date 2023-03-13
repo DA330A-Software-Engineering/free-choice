@@ -7,6 +7,7 @@ export interface IFirebaseConfig {
     storageBucket: string,
     messagingSenderId: string,
     appId: string,
+    measurementId: string
 };
 
 /** Firebase Configuration */
@@ -18,5 +19,6 @@ export const FirebaseConfig: IFirebaseConfig = {
     projectId: process.env.FIREBASE_CONFIG_projectId || '',
     storageBucket: process.env.FIREBASE_CONFIG_storageBucket || '',
     messagingSenderId: process.env.FIREBASE_CONFIG_messagingSenderId || '',
-    appId: process.env.FIREBASE_CONFIG_appId || ''
+    appId: process.env.FIREBASE_CONFIG_appId || '',
+    measurementId: process.env.FIREBASE_CONFIG_measurementId || ''
 }
