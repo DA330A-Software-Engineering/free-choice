@@ -8,12 +8,12 @@ type ToggleDeviceProps = {
     device: IDevice
 }
 
-/** Component for a toggable device */
+/** Component for a toggleable device */
 const ToggleDevice: FC<ToggleDeviceProps> = ( {device} ) => {
 
   // Device state
   const [Device, SetDevice] = useState<IDevice>(device);
-  const [Loading, SetLoading] = useState<Boolean>(false); // Becouse its a delay when calling: APP -> API - FIREBASE -> APP. We need a loading state
+  const [Loading, SetLoading] = useState<Boolean>(false); // Because its a delay when calling: APP -> API - FIREBASE -> APP. We need a loading state
 
   // Init contexts
   const authContext = useAuth()
@@ -26,7 +26,7 @@ const ToggleDevice: FC<ToggleDeviceProps> = ( {device} ) => {
     deviceContext.startListening(device.id, (device: IDevice | null) => {
       if (device == null) { throw new Error('Firebase error');}
 
-      // When we have clicked on 'updateDevice' we are goin into a loading state.
+      // When we have clicked on 'updateDevice' we are going into a loading state.
       // When Firebase gets the update leave the loading state and update the button
       if (Loading && (device.state.on != Device.state.on)) {
         SetDevice(device);
@@ -42,9 +42,9 @@ const ToggleDevice: FC<ToggleDeviceProps> = ( {device} ) => {
     SetLoading(true);
     deviceContext.updateDevice({
       id: Device.id,
-      state: { on: !Device.state.on},
+      state: { on: !Device.state.on },
       type: Device.type
-    },authContext.getToken()!);
+    })//,authContext.getToken()!);
   };
 
   
