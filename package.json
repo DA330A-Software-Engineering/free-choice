@@ -4,7 +4,7 @@
   "description": "",
   "main": "public/electron.js",
   "scripts": {
-    "react-start": "webpack serve --port 3000",
+    "react-start": "webpack serve --port 4000",
     "dev-server": "cross-env BROWSER=none npm run react-start",
     "dev-client": "electron .",
     "react-build": "NODE_ENV=production webpack",
