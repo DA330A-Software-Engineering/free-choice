@@ -35,6 +35,9 @@ const App: FC = () => {
               <Route index element={<DeviceContainerView />} />
             </Route>
 
+            {/* Test devices without auth path */}
+            <Route path='/testdevice' element={<DeviceContainerView />} />
+
             {/* Restricted for authenticated users */}
             <Route path="/" element={<PrivateRouteWrapper restricted={true} redirectTo='/' />}>
               <Route path="login" element={<LoginView />} />
