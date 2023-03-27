@@ -36,7 +36,7 @@ const DeviceContext = createContext<IDeviceContext>({
     startListening: function (deviceId: string, onUpdate: (data: IDevice | null) => void): void {
         throw new Error('Function not implemented.');
     },
-    updateDevice: function (device: IDevice, token: string): void {
+    updateDevice: function (device: IDevice, /*token: string*/): void {
         throw new Error('Function not implemented.');
     },
     getAllDevices: function (onGetDocuments: (value: QuerySnapshot<DocumentData>) => void): void {

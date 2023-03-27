@@ -1,19 +1,20 @@
-import { FC } from 'react';
+import { FC, ReactNode } from 'react';
+import { buttonStyle } from './Button.style';
 
-/** Props for this component */
 type ButtonProps = {
-    text: string;
-    onClick: () => void;
-}
+  children: ReactNode;
+  onClick: () => void;
+  text?: string;
+  className?: string;
+};
 
-/** Custom button */
-const Button: FC<ButtonProps> = ({ text, onClick }) => {
-    return (
-        <>
-          <button onClick={onClick}>{text}</button>
-        </>
-    )
-}
+const Button: FC<ButtonProps> = ({ children, onClick, text, className }) => {
+  return (
+    <button onClick={onClick} className={`${buttonStyle} ${className}`}>
+      {text && <span>{text}</span>}
+      {children}
+    </button>
+  );
+};
 
-// Export the component
-export default Button
+export default Button;

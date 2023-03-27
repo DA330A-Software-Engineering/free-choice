@@ -2,80 +2,84 @@ import { FC, useEffect, useState } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { IDevice, useDeviceContext } from '../../contexts/DeviceContext';
 import Button from '../interactable/Button.cmpt';
+import WbIncandescentIcon from '@mui/icons-material/WbIncandescent';
+import WbIncandescentOutlinedIcon from '@mui/icons-material/WbIncandescentOutlined';
+import CircularProgress from '@mui/material/CircularProgress';
+import { toggleDeviceStyle, iconStyle, nameStyle } from './ToggleDevice.style';
+
 
 /** Props for this component */
 type ToggleDeviceProps = {
-    device: IDevice
+  device: IDevice,
+  IconActive?: React.ElementType,
+  IconDisabled?: React.ElementType
 }
 
-/** Component for a toggable device */
-const ToggleDevice: FC<ToggleDeviceProps> = ( {device} ) => {
+const getIconComponent = (type: IDevice['type'], active: boolean) => {
+  switch (type) {
+    case 'toggle':
+      return active ? WbIncandescentIcon : WbIncandescentOutlinedIcon;
+    default:
+      return null;
+  }
+};
 
-  // Device state
-  const [Device, SetDevice] = useState<IDevice>(device);
-  const [Loading, SetLoading] = useState<Boolean>(false); // Becouse its a delay when calling: APP -> API - FIREBASE -> APP. We need a loading state
-  const [activeState, SetActiveState] = useState<boolean>(); // Becuse window and toggle has two diffrent names for the same functionallity
+/** Component for a toggle-able device */
+const ToggleDevice: FC<ToggleDeviceProps> = ({ device }) => {
 
-  // Init contexts
-  const authContext = useAuth()
-  const deviceContext = useDeviceContext()
+  const [loading, setLoading] = useState<boolean>(true);
+  const [active, setActive] = useState<boolean>(false);
+  const auth = useAuth();
+  const deviceContext = useDeviceContext();
 
-
-  // On Component Mount
-  useEffect( () => {
-    // Start listening on the device
+  useEffect(() => {
     deviceContext.startListening(device.id, (device: IDevice | null) => {
-      if (device == null) { throw new Error('Firebase error');}
+      if (device == null) {
+        throw new Error('Firebase error');
+      }
 
-      // Need to do this, cuz window and toggle has two diffrent names
-      // for the same functionallity
-      let newState = device.state.on
-      if (newState == undefined){ newState = device.state.open }
+      let newState = device.state.on;
+      if (newState === undefined) {
+        newState = false; // default to off
+      }
 
-
-      // When we have clicked on 'updateDevice' we are goin into a loading state.
-      // When Firebase gets the update leave the loading state and update the button
-      if (Loading && (newState != activeState)) {
-        SetActiveState(newState);
-        SetLoading(false);
-      } else if (newState != activeState) { SetActiveState(newState) }
+      setActive(newState);
+      setLoading(false);
     });
-  }); 
+  }, [deviceContext, device]);
 
+  const onButtonClick = () => {
+    const newActive = !active;
 
-  const onButtonClicked = () => {
-    // Enable loading state
-    // And send the new state to the API
+    deviceContext.updateDevice(
+      {
+        id: device.id,
+        state: { on: newActive },
+        type: device.type,
+        name: device.name,
+      },
+      auth.getToken()!
+    );
 
-    // Need to do this, cuz window and toggle has two diffrent names
-    // for the same functionallity
-    let deviceState = {};
-    if (device.type == 'window') {
-      deviceState = { open: !activeState }
-    } else if (device.type == 'toggle') {
-      deviceState = { on: !activeState }
-    }
-
-    SetLoading(true);
-
-    // Update device
-    deviceContext.updateDevice({
-      id: Device.id,
-      state: deviceState,
-      type: Device.type,
-      name: Device.name
-    }, authContext.getToken()!);
+    setActive(newActive);
   };
 
-  
-  return (
-      <>
-        <Button 
-          text={`${Device.name}: ${activeState}, Loading: ${Loading}`}
-          onClick={ onButtonClicked } />
-      </>
-  )
-}
+  const IconComponent = getIconComponent(device.type, active);
+
+return (
+  <div className={toggleDeviceStyle}>
+    <Button onClick={onButtonClick}>
+      {loading ? (
+        <CircularProgress size={24} />
+      ) : (
+        IconComponent && <IconComponent className={iconStyle} />
+      )}
+    </Button>
+    <span className={nameStyle}>{device.name}</span>
+  </div>
+);
+
+};
 
 // Export the component
-export default ToggleDevice
+export default ToggleDevice;

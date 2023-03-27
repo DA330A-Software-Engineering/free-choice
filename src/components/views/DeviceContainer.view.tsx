@@ -1,12 +1,13 @@
-import { initializeApp } from 'firebase/app';
-import { QueryDocumentSnapshot, QuerySnapshot } from 'firebase/firestore';
 import { FC, useEffect, useState } from 'react';
+import { QueryDocumentSnapshot, QuerySnapshot } from 'firebase/firestore';
 import { IDevice, useDeviceContext } from '../../contexts/DeviceContext';
 import ToggleDevice from '../devices/ToggleDevice.cmpt';
+import WbIncandescentIcon from '@mui/icons-material/WbIncandescent';
+import WbIncandescentOutlinedIcon from '@mui/icons-material/WbIncandescentOutlined';
+import { containerStyle } from './DeviceContainerView.styles';
 
 /** Props for this component */
 type DeviceContainerProps = {}
-
 
 /** View containing all the devices */
 const DeviceContainerView: FC<DeviceContainerProps> = () => {
@@ -36,34 +37,35 @@ const DeviceContainerView: FC<DeviceContainerProps> = () => {
   }, [])
 
 
-  /** Render right component from type */
-  const renderComponentFromDevice = (device: IDevice) => {
-    switch (device.type) {
-      case 'toggle':
-        return <ToggleDevice device={device} />;
-      case 'window':
-        return <ToggleDevice device={device} />;
-      case 'fan':
-        return <ToggleDevice device={device} />;
-      default:
-        return null;
-    }
+/** Render right component from type */
+const renderComponentFromDevice = (device: IDevice) => {
+  switch (device.type) {
+    case 'toggle':
+      return (
+        <ToggleDevice
+          device={device}
+          IconActive={WbIncandescentIcon}
+          IconDisabled={WbIncandescentOutlinedIcon}
+        />
+      );
+    default:
+      return null;
   }
+};
+
 
 
   return (
-      <>
-        <div>
-          {devices.map((device: IDevice, index: number) => 
-            <div key={index}>
-              {renderComponentFromDevice(device)}
-            </div>
-          )}
+    <div className={containerStyle}>
+      {devices.map((device: IDevice, index: number) => (
+        <div key={index}>
+          {renderComponentFromDevice(device)}
         </div>
-      </>
-  )
+      ))}
+    </div>
+  );
 }
 
 
 // Export the component
-export default DeviceContainerView
+export default DeviceContainerView;
