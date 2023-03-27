@@ -3,6 +3,7 @@ import { QueryDocumentSnapshot, QuerySnapshot } from 'firebase/firestore';
 import { FC, useEffect, useState } from 'react';
 import { IDevice, useDeviceContext } from '../../contexts/DeviceContext';
 import ToggleDevice from '../devices/ToggleDevice.cmpt';
+import { deviceContainerStyle } from './DeviceContainer.style';
 
 /** Props for this component */
 type DeviceContainerProps = {}
@@ -53,7 +54,7 @@ const DeviceContainerView: FC<DeviceContainerProps> = () => {
 
   return (
       <>
-        <div>
+        <div className={deviceContainerStyle}>
           {devices.map((device: IDevice, index: number) => 
             <div key={index}>
               {renderComponentFromDevice(device)}

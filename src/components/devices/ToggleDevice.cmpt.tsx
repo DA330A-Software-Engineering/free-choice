@@ -2,14 +2,16 @@ import { FC, useEffect, useState } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { IDevice, useDeviceContext } from '../../contexts/DeviceContext';
 import Button from '../interactable/Button.cmpt';
+import { toggleDeviceStyle } from './ToggleDevice.style';
+
 
 /** Props for this component */
 type ToggleDeviceProps = {
-    device: IDevice
+  device: IDevice,
 }
 
 /** Component for a toggable device */
-const ToggleDevice: FC<ToggleDeviceProps> = ( {device} ) => {
+const ToggleDevice: FC<ToggleDeviceProps> = ( {device } ) => {
 
   // Device state
   const [Device, SetDevice] = useState<IDevice>(device);
@@ -72,7 +74,9 @@ const ToggleDevice: FC<ToggleDeviceProps> = ( {device} ) => {
       <>
         <Button 
           text={`${Device.name}: ${activeState}, Loading: ${Loading}`}
-          onClick={ onButtonClicked } />
+          onClick={onButtonClicked}
+          className={toggleDeviceStyle}
+      />
       </>
   )
 }
