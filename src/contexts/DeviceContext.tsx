@@ -9,13 +9,17 @@ const API_ENDPOINT_UPDATE_DEVICE = process.env.API_ENDPOINT_UPDATE_DEVICE || '';
 /** Interface for Devices */
 export interface IDevice {
     id: string,
-    state: IStateToggle,
-    type: string
+    state: IState,
+    type: string,
+    name: string
 }
 
 /** Interface for state of toggle */
-export interface IStateToggle {
-    on: boolean
+export interface IState {
+    on?: boolean;
+    open?: boolean;
+    locked?: boolean;
+    text?: string;
 }
 
 
@@ -68,7 +72,8 @@ export const DeviceContextProvider: FC<{children: React.ReactElement}> = ({child
                 const device: IDevice = {
                     id: deviceId,
                     state: snap.data()?.state,
-                    type: snap.data()?.type
+                    type: snap.data()?.type,
+                    name: snap.data()?.name
                 }
                 onUpdate(device)
             }
