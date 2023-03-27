@@ -3,6 +3,7 @@ import { QueryDocumentSnapshot, QuerySnapshot } from 'firebase/firestore';
 import { FC, useEffect, useState } from 'react';
 import { IDevice, IStateToggle, useDeviceContext } from '../../contexts/DeviceContext';
 import ToggleDevice from '../devices/ToggleDevice.cmpt';
+import InputDevice from '../devices/InputDevice.cmpt';
 
 /** Props for this component */
 type DeviceContainerProps = {}
@@ -33,6 +34,9 @@ const DeviceContainerView: FC<DeviceContainerProps> = () => {
         let newDevice: IDevice = {
           id: doc.id,
           state: docData.state,
+        
+
+
           type: docData.type
         } 
         data.push(newDevice)
@@ -43,14 +47,18 @@ const DeviceContainerView: FC<DeviceContainerProps> = () => {
 
 
   /** Render right component from type */
-  const renderComponentFromDevice = (device: IDevice) => {
+const renderComponentFromDevice = (device: IDevice) => {
     switch (device.type) {
-      case 'toggle':
-        return <ToggleDevice device={device} />;
-      default:
-        return null;
+        case 'toggle':
+            return <ToggleDevice device={device} />;
+        case 'display':
+            return <InputDevice device={device} />;
+        default:
+            return null;
     }
-  }
+};
+
+
 
 
   return (

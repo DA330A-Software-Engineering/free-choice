@@ -10,13 +10,18 @@ const API_ENDPOINT_UPDATE_DEVICE = process.env.API_ENDPOINT_UPDATE_DEVICE || '';
 export interface IDevice {
     id: string,
     state: IStateToggle,
-    type: string
+    type: string,
+    //TODO name: string ?
 }
 
 /** Interface for state of toggle */
 export interface IStateToggle {
-    on: boolean
+    on?: boolean;
+    open?: boolean;
+    locked?: boolean;
+    text?: string;
 }
+
 
 
 /** Interface for the DeviceContext */
