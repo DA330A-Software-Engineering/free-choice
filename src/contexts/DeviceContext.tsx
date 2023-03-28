@@ -50,12 +50,13 @@ export const DeviceContextProvider: FC<{children: React.ReactElement}> = ({child
 
     /** Call the API to update a device */
     const updateDevice = (device: IDevice, token: string) => {
+        console.log(device)
         fetch(API_ENDPOINT_UPDATE_DEVICE,
             {
                 method: 'PUT',
                 headers: { 
                     'Content-Type': 'application/json',
-                    //'x-auth-header': token
+                    'x-auth-header': 'token'
                 },
                 body: JSON.stringify(device)
             }).then((res: Response) => {
