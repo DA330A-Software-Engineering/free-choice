@@ -55,7 +55,7 @@ export const DeviceContextProvider: FC<{children: React.ReactElement}> = ({child
                 method: 'PUT',
                 headers: { 
                     'Content-Type': 'application/json',
-                    'x-auth-header': token
+                    //'x-auth-header': token
                 },
                 body: JSON.stringify(device)
             }).then((res: Response) => {

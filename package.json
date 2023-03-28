@@ -4,7 +4,7 @@
   "description": "",
   "main": "public/electron.js",
   "scripts": {
-    "react-start": "webpack serve --port 3000",
+    "react-start": "webpack serve --port 4000",
     "dev-server": "cross-env BROWSER=none npm run react-start",
     "dev-client": "electron .",
     "react-build": "NODE_ENV=production webpack",
@@ -30,6 +30,7 @@
     "@babel/preset-env": "^7.20.2",
     "@babel/preset-react": "^7.18.6",
     "@babel/preset-typescript": "^7.21.0",
+    "@emotion/css": "^11.10.6",
     "assert": "^2.0.0",
     "babel-loader": "^9.1.2",
     "buffer": "^6.0.3",
