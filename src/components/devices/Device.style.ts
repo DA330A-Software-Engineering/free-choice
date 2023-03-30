@@ -1,6 +1,6 @@
 import { css } from '@emotion/css';
 
-export const toggleDeviceStyle = css`
+export const deviceStyle = css`
   display: flex;
   flex-direction: column;
   justify-content: center;
