@@ -67,12 +67,12 @@ const DoorDevice: FC<DoorDeviceProps> = ({ device }) => {
 	return (
 		<>
 			<Button
-				text={`Door: ${doorState.open ? 'Open' : 'Closed'}, Loading: ${Loading}`}
+				text={`Door: ${doorState.open ? 'Open' : 'Closed'}${Loading ? ', Loading...' : ''}`}
 				onClick={onToggleDoor}
 				className={deviceStyle}
 			/>
 			<Button
-				text={`Lock: ${doorState.locked ? 'Locked' : 'Unlocked'}, Loading: ${Loading}`}
+				text={`Lock: ${doorState.locked ? 'Locked' : 'Unlocked'}Loading: ${Loading}`}
 				onClick={onToggleLock}
 				className={deviceStyle}
 			/>

@@ -44,7 +44,7 @@ const DeviceContainerView: FC<DeviceContainerProps> = () => {
       case 'toggle':
         return <ToggleDevice device={device} />;
       case 'window':
-        return <ToggleDevice device={device} />;
+        return <DoorDevice device={device} />;
       case 'fan':
         return <ToggleDevice device={device} />;
       case 'door':
