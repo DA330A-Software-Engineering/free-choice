@@ -5,6 +5,7 @@ import { IDevice, useDeviceContext } from '../../contexts/DeviceContext';
 import ToggleDevice from '../devices/ToggleDevice.cmpt';
 import { deviceContainerStyle } from './DeviceContainer.style';
 import DoorDevice from '../devices/DoorDevice.cmpt';
+import WindowDevice from '../devices/WindowDevice.cmpt';
 
 /** Props for this component */
 type DeviceContainerProps = {}
@@ -44,7 +45,7 @@ const DeviceContainerView: FC<DeviceContainerProps> = () => {
       case 'toggle':
         return <ToggleDevice device={device} />;
       case 'window':
-        return <ToggleDevice device={device} />;
+        return <WindowDevice device={device} />;
       case 'fan':
         return <ToggleDevice device={device} />;
       case 'door':
