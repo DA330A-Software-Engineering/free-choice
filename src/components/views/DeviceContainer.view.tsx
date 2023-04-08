@@ -6,6 +6,7 @@ import ToggleDevice from '../devices/ToggleDevice.cmpt';
 import { deviceContainerStyle } from './DeviceContainer.style';
 import DoorDevice from '../devices/DoorDevice.cmpt';
 import WindowDevice from '../devices/WindowDevice.cmpt';
+import { faDoorClosed, faLock, faDoorOpen, faUnlock, faToggleOn, faToggleOff } from '@fortawesome/free-solid-svg-icons'
 
 /** Props for this component */
 type DeviceContainerProps = {}
@@ -43,13 +44,11 @@ const DeviceContainerView: FC<DeviceContainerProps> = () => {
   const renderComponentFromDevice = (device: IDevice) => {
     switch (device.type) {
       case 'toggle':
-        return <ToggleDevice device={device} />;
+        return <ToggleDevice device={device} activceIcon={faToggleOn} unActivceicon={faToggleOff}/>;
       case 'window':
-        return <WindowDevice device={device} />;
-      case 'fan':
-        return <ToggleDevice device={device} />;
+        return <WindowDevice device={device} windowOpenIcon={faDoorOpen} windowClosedIcon={faDoorClosed} lockIcon={faLock} unLockIcon={faUnlock} />;  // FontAwsome dosent have a window icon.
       case 'door':
-        return <DoorDevice device={device} />;
+        return <DoorDevice device={device} doorOpenIcon={faDoorOpen} doorClosedIcon={faDoorClosed} lockIcon={faLock} unLockIcon={faUnlock}  />;
       
       default:
         return null;
@@ -58,7 +57,7 @@ const DeviceContainerView: FC<DeviceContainerProps> = () => {
 
 
   return (
-      <>
+      <div>
         <div className={deviceContainerStyle}>
           {devices.map((device: IDevice, index: number) => 
             <div key={index}>
@@ -66,7 +65,7 @@ const DeviceContainerView: FC<DeviceContainerProps> = () => {
             </div>
           )}
         </div>
-      </>
+      </div>
   )
 }
 

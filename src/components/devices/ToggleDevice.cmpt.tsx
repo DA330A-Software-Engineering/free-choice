@@ -2,21 +2,23 @@ import { FC, useEffect, useState } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { IDevice, useDeviceContext } from '../../contexts/DeviceContext';
 import Button from '../interactable/Button.cmpt';
-import { deviceStyle } from './Device.style';
+import { deviceButton, deviceStyle } from './Device.style';
+import { IconDefinition } from '@fortawesome/free-solid-svg-icons'
 
 
 /** Props for this component */
 type ToggleDeviceProps = {
   device: IDevice,
+  activceIcon: IconDefinition,
+  unActivceicon: IconDefinition
 }
 
 /** Component for a toggable device */
-const ToggleDevice: FC<ToggleDeviceProps> = ( {device } ) => {
+const ToggleDevice: FC<ToggleDeviceProps> = ( {device, activceIcon, unActivceicon} ) => {
 
   // Device state
-  const [Device, SetDevice] = useState<IDevice>(device);
-  const [Loading, SetLoading] = useState<Boolean>(false); // Becouse its a delay when calling: APP -> API - FIREBASE -> APP. We need a loading state
-  const [activeState, SetActiveState] = useState<boolean>(); // Becuse window and toggle has two diffrent names for the same functionallity
+  const [Device, setDevice] = useState<IDevice>(device);
+  const [loading, setLoading] = useState<boolean>(false); // Becouse its a delay when calling: APP -> API - FIREBASE -> APP. We need a loading state
 
   // Init contexts
   const authContext = useAuth()
@@ -26,21 +28,15 @@ const ToggleDevice: FC<ToggleDeviceProps> = ( {device } ) => {
   // On Component Mount
   useEffect( () => {
     // Start listening on the device
-    deviceContext.startListening(device.id, (device: IDevice | null) => {
-      if (device == null) { throw new Error('Firebase error');}
-
-      // Need to do this, cuz window and toggle has two diffrent names
-      // for the same functionallity
-      let newState = device.state.on
-      if (newState == undefined){ newState = device.state.open }
-
+    deviceContext.startListening(device.id, (newDevice: IDevice | null) => {
+      if (newDevice == null) { throw new Error('Firebase error');}
 
       // When we have clicked on 'updateDevice' we are goin into a loading state.
       // When Firebase gets the update leave the loading state and update the button
-      if (Loading && (newState != activeState)) {
-        SetActiveState(newState);
-        SetLoading(false);
-      } else if (newState != activeState) { SetActiveState(newState) }
+      if (loading && (newDevice.state.on != Device.state.on)) {
+        setDevice(newDevice);
+        setLoading(false);
+      } else if (newDevice.state.on != Device.state.on) { setDevice(newDevice) }
     });
   }); 
 
@@ -49,21 +45,13 @@ const ToggleDevice: FC<ToggleDeviceProps> = ( {device } ) => {
     // Enable loading state
     // And send the new state to the API
 
-    // Need to do this, cuz window and toggle has two diffrent names
-    // for the same functionallity
-    let deviceState = {};
-    if (device.type == 'window') {
-      deviceState = { open: !activeState }
-    } else if (device.type == 'toggle') {
-      deviceState = { on: !activeState }
-    }
 
-    SetLoading(true);
+    setLoading(true);
 
     // Update device
     deviceContext.updateDevice({
       id: Device.id,
-      state: deviceState,
+      state: Device.state,
       type: Device.type,
       name: Device.name
     }, authContext.getToken()!);
@@ -71,13 +59,16 @@ const ToggleDevice: FC<ToggleDeviceProps> = ( {device } ) => {
 
   
   return (
-      <>
+    <div>
+      <p>{Device.name}</p>
+      <div className={deviceStyle}>
         <Button 
-          text={`${Device.name}: ${activeState}, Loading: ${Loading}`}
+          disabled={false}
           onClick={onButtonClicked}
-          className={deviceStyle}
-      />
-      </>
+          className={deviceButton}
+          icon={!!Device.state.on ? activceIcon : unActivceicon} loading={loading} active={!!Device.state.on}/>
+      </div>
+    </div>
   )
 }
 
