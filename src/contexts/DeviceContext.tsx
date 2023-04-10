@@ -11,7 +11,7 @@ export interface IDevice {
     id: string,
     state: IState,
     type: string,
-    name: string
+    name?: string
 }
 
 /** Interface for state of toggle */
@@ -50,6 +50,7 @@ export const DeviceContextProvider: FC<{children: React.ReactElement}> = ({child
 
     /** Call the API to update a device */
     const updateDevice = (device: IDevice, token: string) => {
+        console.log("Sending to server: " + JSON.stringify(device));
         fetch(API_ENDPOINT_UPDATE_DEVICE,
             {
                 method: 'PUT',
@@ -75,6 +76,7 @@ export const DeviceContextProvider: FC<{children: React.ReactElement}> = ({child
                     type: snap.data()?.type,
                     name: snap.data()?.name
                 }
+                console.log("Retriving from firebase: " + JSON.stringify(device));
                 onUpdate(device)
             }
         )
