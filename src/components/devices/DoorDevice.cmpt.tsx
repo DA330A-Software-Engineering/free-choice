@@ -35,14 +35,14 @@ const DoorDevice: FC<DoorDeviceProps> = ({ device, doorOpenIcon, doorClosedIcon,
 		});
 	}); 
 
-	const updateDeviceState = () => {
+
+	const updateDeviceState = (state: {}) => {
 		setLoading(true);
 		
 		deviceContext.updateDevice({
 			id: Device.id,
-			state: Device.state,
-			type: Device.type,
-			name: Device.name
+			state: state,
+			type: Device.type
 		}, authContext.getToken()!);
 	};
 
@@ -51,14 +51,14 @@ const DoorDevice: FC<DoorDeviceProps> = ({ device, doorOpenIcon, doorClosedIcon,
 			<p>{Device.name}</p>
 			<div className={deviceStyle}>
 				<Button
-					onClick={updateDeviceState}
+					onClick={() => updateDeviceState({open: !Device.state.open, locked: Device.state.locked})}
 					className={deviceButton}
 					loading={loading}
 					disabled={!!(!Device.state.open && Device.state.locked)}
 					active={!!Device.state.open}
 					icon={Device.state.open ? doorOpenIcon : doorClosedIcon}/>
 				<Button
-					onClick={updateDeviceState}
+					onClick={() => updateDeviceState({open: Device.state.open, locked: !Device.state.locked})}
 					className={deviceButton}
 					disabled={!!(Device.state.open && !Device.state.locked)}
 					icon={Device.state.locked ? lockIcon : unLockIcon}

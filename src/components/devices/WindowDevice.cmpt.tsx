@@ -37,13 +37,12 @@ const WindowDevice: FC<WindowDeviceProps> = ({ device, windowClosedIcon, windowO
 	}); 
 
 
-	const updateDeviceState = () => {
+	const updateDeviceState = (state: {}) => {
 		setLoading(true);
 		deviceContext.updateDevice({
 			id: Device.id,
-			state: Device.state,
-			type: Device.type,
-			name: Device.name
+			state: state,
+			type: Device.type
 		}, authContext.getToken()!);
 	};
 
@@ -53,12 +52,12 @@ const WindowDevice: FC<WindowDeviceProps> = ({ device, windowClosedIcon, windowO
 			<p>{Device.name}</p>
 			<div className={deviceStyle}>
 			<Button
-				onClick={updateDeviceState}
+				onClick={() => updateDeviceState({open: !Device.state.open, locked: Device.state.locked})}
 				className={deviceButton}
 				disabled={!!(!Device.state.open && Device.state.locked)}
 				icon={Device.state.open ? windowOpenIcon : windowClosedIcon} loading={loading} active={!!Device.state.open}/>
 			<Button
-				onClick={updateDeviceState}
+				onClick={() => updateDeviceState({open: Device.state.open, locked: !Device.state.locked})}
 				disabled={!!(Device.state.open && !Device.state.locked)}
 				className={deviceButton}
 				icon={Device.state.locked ? lockIcon : unLockIcon} loading={loading} active={!!Device.state.locked}/>

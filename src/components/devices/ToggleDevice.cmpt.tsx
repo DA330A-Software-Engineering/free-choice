@@ -34,6 +34,7 @@ const ToggleDevice: FC<ToggleDeviceProps> = ( {device, activceIcon, unActivceico
       // When we have clicked on 'updateDevice' we are goin into a loading state.
       // When Firebase gets the update leave the loading state and update the button
       if (loading && (newDevice.state.on != Device.state.on)) {
+        console.log('Update')
         setDevice(newDevice);
         setLoading(false);
       } else if (newDevice.state.on != Device.state.on) { setDevice(newDevice) }
@@ -51,9 +52,8 @@ const ToggleDevice: FC<ToggleDeviceProps> = ( {device, activceIcon, unActivceico
     // Update device
     deviceContext.updateDevice({
       id: Device.id,
-      state: Device.state,
-      type: Device.type,
-      name: Device.name
+      state: {"on": !Device.state.on},
+      type: Device.type
     }, authContext.getToken()!);
   };
 
