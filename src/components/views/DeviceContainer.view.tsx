@@ -3,7 +3,6 @@ import { QueryDocumentSnapshot, QuerySnapshot } from 'firebase/firestore';
 import { FC, useEffect, useState } from 'react';
 import { IDevice, useDeviceContext } from '../../contexts/DeviceContext';
 import ToggleDevice from '../devices/ToggleDevice.cmpt';
-import { deviceContainerStyle } from './DeviceContainer.style';
 import DoorDevice from '../devices/DoorDevice.cmpt';
 import WindowDevice from '../devices/WindowDevice.cmpt';
 import { faDoorClosed, faLock, faDoorOpen, faUnlock, faToggleOn, faToggleOff } from '@fortawesome/free-solid-svg-icons'
@@ -58,7 +57,7 @@ const DeviceContainerView: FC<DeviceContainerProps> = () => {
 
   return (
       <div>
-        <div className={deviceContainerStyle}>
+        <div className='deviceContainerStyle'>
           {devices.map((device: IDevice, index: number) => <RenderComponentFromDevice device={device} key={index}  />)}
         </div>
       </div>

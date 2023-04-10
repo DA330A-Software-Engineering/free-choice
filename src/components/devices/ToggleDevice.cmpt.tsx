@@ -2,7 +2,6 @@ import { FC, useEffect, useState } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { IDevice, useDeviceContext } from '../../contexts/DeviceContext';
 import Button from '../interactable/Button.cmpt';
-import { deviceButton, deviceStyle } from './Device.style';
 import { IconDefinition } from '@fortawesome/free-solid-svg-icons'
 
 
@@ -61,11 +60,11 @@ const ToggleDevice: FC<ToggleDeviceProps> = ( {device, activceIcon, unActivceico
   return (
     <div>
       <p>{Device.name}</p>
-      <div className={deviceStyle}>
+      <div className='deviceStyle'>
         <Button 
           disabled={false}
           onClick={onButtonClicked}
-          className={deviceButton}
+          className='deviceButton'
           icon={!!Device.state.on ? activceIcon : unActivceicon} loading={loading} active={!!Device.state.on}/>
       </div>
     </div>

@@ -2,7 +2,6 @@ import { FC, useEffect, useState } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { IDevice, useDeviceContext } from '../../contexts/DeviceContext';
 import Button from '../interactable/Button.cmpt';
-import { deviceButton, deviceStyle } from './Device.style';
 import { IconDefinition } from '@fortawesome/free-solid-svg-icons';
 
 type WindowDeviceProps = {
@@ -50,16 +49,16 @@ const WindowDevice: FC<WindowDeviceProps> = ({ device, windowClosedIcon, windowO
 
 		<div>
 			<p>{Device.name}</p>
-			<div className={deviceStyle}>
+			<div className='deviceStyle'>
 			<Button
 				onClick={() => updateDeviceState({open: !Device.state.open, locked: Device.state.locked})}
-				className={deviceButton}
+				className='deviceButton'
 				disabled={!!(!Device.state.open && Device.state.locked)}
 				icon={Device.state.open ? windowOpenIcon : windowClosedIcon} loading={loading} active={!!Device.state.open}/>
 			<Button
 				onClick={() => updateDeviceState({open: Device.state.open, locked: !Device.state.locked})}
 				disabled={!!(Device.state.open && !Device.state.locked)}
-				className={deviceButton}
+				className='deviceButton'
 				icon={Device.state.locked ? lockIcon : unLockIcon} loading={loading} active={!!Device.state.locked}/>
 			</div>
 		</div>
