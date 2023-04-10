@@ -2,81 +2,70 @@ import { FC, useEffect, useState } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { IDevice, useDeviceContext } from '../../contexts/DeviceContext';
 import Button from '../interactable/Button.cmpt';
-import { deviceStyle } from './Device.style';
+import { deviceButton, deviceStyle } from './Device.style';
+import { IconDefinition } from '@fortawesome/free-solid-svg-icons';
 
 type DoorDeviceProps = {
   device: IDevice,
+  doorOpenIcon: IconDefinition,
+  doorClosedIcon: IconDefinition,
+  lockIcon: IconDefinition,
+  unLockIcon: IconDefinition
 }
 
-const DoorDevice: FC<DoorDeviceProps> = ({ device }) => {
-	const [Device, SetDevice] = useState<IDevice>(device);
-	const [Loading, SetLoading] = useState<Boolean>(false);
-	const [doorState, setDoorState] = useState({
-		/* The nullish coalescing operator (??) is used to provide the default values of false when 
-		the respective device.state properties are null or undefined. 
-		This ensures that doorState always has valid boolean values 
-		for both the open and locked properties. */
-		open: device.state.open ?? false,
-		locked: device.state.locked ?? false
-	});
+const DoorDevice: FC<DoorDeviceProps> = ({ device, doorOpenIcon, doorClosedIcon, lockIcon, unLockIcon }) => {
+	const [Device, setDevice] = useState<IDevice>(device);
+	const [loading, setLoading] = useState<boolean>(false);
 
 	const authContext = useAuth()
 	const deviceContext = useDeviceContext()
 
-	useEffect(() => {
-		deviceContext.startListening(device.id, (device: IDevice | null) => {
-			if (device == null) { throw new Error('Firebase error'); }
+	// On Component Mount
+	useEffect( () => {
+		// Start listening on the device
+		deviceContext.startListening(device.id, (newDevice: IDevice | null) => {
+		if (newDevice == null) { throw new Error('Firebase error');}
 
-			setDoorState({
-				open: device.state.open ?? false,
-				locked: device.state.locked ?? false
-			});
-
-			// Set loading state to false when receiving new state from device context
-			SetLoading(false);
+		// When we have clicked on 'updateDevice' we are goin into a loading state.
+		// When Firebase gets the update leave the loading state and update the button
+		if (loading && ((newDevice.state.locked != Device.state.locked) || (newDevice.state.open != Device.state.open))) {
+			setDevice(newDevice);
+			setLoading(false);
+		} else if ((newDevice.state.locked != Device.state.locked) || (newDevice.state.open != Device.state.open)) { setDevice(newDevice) }
 		});
-	});
+	}); 
 
-	const onToggleLock = () => {
-		if (!doorState.open) {
-			updateDeviceState({ open: doorState.open, locked: !doorState.locked });
-		} else {
-			alert('You cannot lock the door when it is open.');
-		}
-	};
-
-	const onToggleDoor = () => {
-		if (!doorState.locked) {
-			updateDeviceState({ open: !doorState.open, locked: doorState.locked });
-		} else {
-			alert('You cannot open the door when it is locked.');
-		}
-	};
-
-	const updateDeviceState = (newState: { open: boolean, locked: boolean }) => {
-		SetLoading(true);
-
+	const updateDeviceState = () => {
+		setLoading(true);
+		
 		deviceContext.updateDevice({
 			id: Device.id,
-			state: newState,
+			state: Device.state,
 			type: Device.type,
 			name: Device.name
 		}, authContext.getToken()!);
 	};
 
 	return (
-		<>
-			<Button
-				text={`Door: ${doorState.open ? 'Open' : 'Closed'}, Loading: ${Loading}`}
-				onClick={onToggleDoor}
-				className={deviceStyle}
-			/>
-			<Button
-				text={`Lock: ${doorState.locked ? 'Locked' : 'Unlocked'}, Loading: ${Loading}`}
-				onClick={onToggleLock}
-				className={deviceStyle}
-			/>
-		</>
+		<div>
+			<p>{Device.name}</p>
+			<div className={deviceStyle}>
+				<Button
+					onClick={updateDeviceState}
+					className={deviceButton}
+					loading={loading}
+					disabled={!!(!Device.state.open && Device.state.locked)}
+					active={!!Device.state.open}
+					icon={Device.state.open ? doorOpenIcon : doorClosedIcon}/>
+				<Button
+					onClick={updateDeviceState}
+					className={deviceButton}
+					disabled={!!(Device.state.open && !Device.state.locked)}
+					icon={Device.state.locked ? lockIcon : unLockIcon}
+					loading={loading}
+					active={!!Device.state.locked} />
+			</div>
+		</div>
 	);
 }
 
