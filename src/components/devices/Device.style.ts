@@ -12,7 +12,6 @@ export const deviceStyle = css`
 `;
 
 export const deviceButton = css`
-
   width: 100px;
   height: 100px;
   margin: 0;

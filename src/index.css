@@ -11,3 +11,38 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.header-container {
+  display: flex;
+  margin-left: 20%;
+  margin-right: 20%;
+  padding-top: 3%;
+}
+
+.header-container > a {
+  margin: 0;
+  padding: 0;
+  margin-left: 12px;
+  margin-right: 20px;
+  color: black;
+  opacity: 0.3;
+  font-size: 20px;
+  text-decoration: none;
+  font-weight: bold;
+  font-family: 'Quicksand', sans-serif;
+}
+
+.header-container > a:hover{
+  opacity: 1;
+  cursor: pointer;
+}
+
+button:hover {
+  cursor: pointer;
+}
+
+#logout {
+  margin-left: auto;
+  font-size: 15px;
+  margin-right: 12px;
+}

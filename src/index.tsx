@@ -1,7 +1,7 @@
 import { createRoot } from 'react-dom/client';
 import { FC } from 'react';
 import "./index.css";
-import { Outlet, Routes, Navigate, BrowserRouter, Route } from "react-router-dom";
+import { Outlet, Routes, Navigate, BrowserRouter, Route, Link } from "react-router-dom";
 import { useAuth } from "./contexts/AuthContext"
 import { DeviceContextProvider } from './contexts/DeviceContext';
 import { AuthenticationProvider } from './contexts/AuthContext';
@@ -10,6 +10,7 @@ import LoginView from './components/views/Login.view';
 import SignupView from './components/views/Signup.view';
 import { FirebaseConfig } from './configs/FirebaseConfig';
 import { initializeApp } from 'firebase/app';
+import { useLocation } from "react-router-dom";
 
 
 /** Creates a prive route wrapper, that check if its a authenticated user. router wrapper can also be used for restrict authenticated users from page using restricted variable */
@@ -17,6 +18,35 @@ const PrivateRouteWrapper: FC<{restricted?: boolean, redirectTo: string}> = ({re
   const auth = useAuth();
   return ((auth.getToken() !== null) === restricted) ? <Navigate to={redirectTo} /> : <Outlet />;
 };
+
+const Header: FC = () => {
+  const auth = useAuth();
+  const location = useLocation();
+  const currentPath = location.pathname;
+
+  const opacityFromPath = (path: string): number => {
+    if (path == currentPath) return 1;
+    else return 0.5;
+  }
+
+  if (auth.getToken()) {
+    return (
+      <div className='header-container'>
+        <Link style={{opacity: opacityFromPath('/')}} to={'/'}>Devices</Link>
+        <Link style={{opacity: opacityFromPath('/groups')}} to={'/groups'}>Groups</Link>
+        <Link style={{opacity: opacityFromPath('/rutines')}} to={'/rutines'}>Rutines</Link>
+        <a onClick={() => auth.logout(() => null)} id='logout'>Logout</a>
+      </div>
+    );
+  }
+
+  return (
+    <div className='header-container'>
+      <Link style={{opacity: opacityFromPath('/login')}} to={'/login'}>Login</Link>
+      <Link style={{opacity: opacityFromPath('/signup')}} to={'/signup'}>Signup</Link>
+    </div>
+  );
+}
 
 
 const App: FC = () => {
@@ -26,13 +56,15 @@ const App: FC = () => {
 
   return (
     <AuthenticationProvider>
-      <DeviceContextProvider>
+      <DeviceContextProvider>    
         <BrowserRouter>
+          <Header />
           <Routes>
-            
             {/* Private Routes */}
             <Route path='/' element={<PrivateRouteWrapper redirectTo='/login' />}>
               <Route index element={<DeviceContainerView />} />
+              <Route path='groups' element={<h1>Not implemented</h1>} />
+              <Route path='rutines' element={<h1>Not implemented</h1>} />
             </Route>
 
             {/* Test devices without auth path */}
@@ -43,7 +75,6 @@ const App: FC = () => {
               <Route path="login" element={<LoginView />} />
               <Route path="signup" element={<SignupView />} />
             </Route>
-
           </Routes>
         </BrowserRouter>
       </DeviceContextProvider>

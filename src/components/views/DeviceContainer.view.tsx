@@ -7,6 +7,8 @@ import { deviceContainerStyle } from './DeviceContainer.style';
 import DoorDevice from '../devices/DoorDevice.cmpt';
 import WindowDevice from '../devices/WindowDevice.cmpt';
 import { faDoorClosed, faLock, faDoorOpen, faUnlock, faToggleOn, faToggleOff } from '@fortawesome/free-solid-svg-icons'
+import Button from '../interactable/Button.cmpt';
+import { BrowserRouter, Route } from 'react-router-dom';
 
 /** Props for this component */
 type DeviceContainerProps = {}
@@ -53,7 +55,6 @@ const DeviceContainerView: FC<DeviceContainerProps> = () => {
         return null;
     }
   }
-
 
   return (
       <div>
