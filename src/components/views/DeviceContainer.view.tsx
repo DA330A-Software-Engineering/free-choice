@@ -41,7 +41,7 @@ const DeviceContainerView: FC<DeviceContainerProps> = () => {
 
 
   /** Render right component from type */
-  const renderComponentFromDevice = (device: IDevice) => {
+  const RenderComponentFromDevice: FC<{device: IDevice}> = ({device}) => {
     switch (device.type) {
       case 'toggle':
         return <ToggleDevice device={device} activceIcon={faToggleOn} unActivceicon={faToggleOff}/>;
@@ -49,7 +49,6 @@ const DeviceContainerView: FC<DeviceContainerProps> = () => {
         return <WindowDevice device={device} windowOpenIcon={faDoorOpen} windowClosedIcon={faDoorClosed} lockIcon={faLock} unLockIcon={faUnlock} />;  // FontAwsome dosent have a window icon.
       case 'door':
         return <DoorDevice device={device} doorOpenIcon={faDoorOpen} doorClosedIcon={faDoorClosed} lockIcon={faLock} unLockIcon={faUnlock}  />;
-      
       default:
         return null;
     }
@@ -59,11 +58,7 @@ const DeviceContainerView: FC<DeviceContainerProps> = () => {
   return (
       <div>
         <div className={deviceContainerStyle}>
-          {devices.map((device: IDevice, index: number) => 
-            <div key={index}>
-              {renderComponentFromDevice(device)}
-            </div>
-          )}
+          {devices.map((device: IDevice, index: number) => <RenderComponentFromDevice device={device} key={index}  />)}
         </div>
       </div>
   )
