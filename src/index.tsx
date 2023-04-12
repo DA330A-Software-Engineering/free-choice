@@ -34,7 +34,7 @@ const Header: FC = () => {
       <div className='header-container'>
         <Link style={{opacity: opacityFromPath('/')}} to={'/'}>Devices</Link>
         <Link style={{opacity: opacityFromPath('/groups')}} to={'/groups'}>Groups</Link>
-        <Link style={{opacity: opacityFromPath('/rutines')}} to={'/rutines'}>Rutines</Link>
+        <Link style={{opacity: opacityFromPath('/routines')}} to={'/rutines'}>Rutines</Link>
         <a onClick={() => auth.logout(() => null)} id='logout'>Logout</a>
       </div>
     );
@@ -64,7 +64,7 @@ const App: FC = () => {
             <Route path='/' element={<PrivateRouteWrapper redirectTo='/login' />}>
               <Route index element={<DeviceContainerView />} />
               <Route path='groups' element={<h1>Not implemented</h1>} />
-              <Route path='rutines' element={<h1>Not implemented</h1>} />
+              <Route path='routines' element={<h1>Not implemented</h1>} />
             </Route>
 
             {/* Test devices without auth path */}
