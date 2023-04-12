@@ -34,7 +34,7 @@ const Header: FC = () => {
       <div className='header-container'>
         <Link style={{opacity: opacityFromPath('/')}} to={'/'}>Devices</Link>
         <Link style={{opacity: opacityFromPath('/groups')}} to={'/groups'}>Groups</Link>
-        <Link style={{opacity: opacityFromPath('/routines')}} to={'/rutines'}>Rutines</Link>
+        <Link style={{opacity: opacityFromPath('/routines')}} to={'/routines'}>Routines</Link>
         <a onClick={() => auth.logout(() => null)} id='logout'>Logout</a>
       </div>
     );
