@@ -2,7 +2,6 @@ import { FC, useEffect, useState } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { IDevice, useDeviceContext } from '../../contexts/DeviceContext';
 import Button from '../interactable/Button.cmpt';
-import { deviceButton, deviceStyle } from './Device.style';
 import { IconDefinition } from '@fortawesome/free-solid-svg-icons';
 
 type DoorDeviceProps = {
@@ -49,17 +48,17 @@ const DoorDevice: FC<DoorDeviceProps> = ({ device, doorOpenIcon, doorClosedIcon,
 	return (
 		<div>
 			<p>{Device.name}</p>
-			<div className={deviceStyle}>
+			<div className='deviceStyle'>
 				<Button
 					onClick={() => updateDeviceState({open: !Device.state.open, locked: Device.state.locked})}
-					className={deviceButton}
+					className='deviceButton'
 					loading={loading}
 					disabled={!!(!Device.state.open && Device.state.locked)}
 					active={!!Device.state.open}
 					icon={Device.state.open ? doorOpenIcon : doorClosedIcon}/>
 				<Button
 					onClick={() => updateDeviceState({open: Device.state.open, locked: !Device.state.locked})}
-					className={deviceButton}
+					className='deviceButton'
 					disabled={!!(Device.state.open && !Device.state.locked)}
 					icon={Device.state.locked ? lockIcon : unLockIcon}
 					loading={loading}

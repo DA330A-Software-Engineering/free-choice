@@ -2,7 +2,6 @@ import { IconDefinition } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { FC } from 'react';
 import { Oval } from 'react-loader-spinner';
-import { loadingStyle } from '../devices/Device.style';
 
 /** Props for this component */
 type ButtonProps = {
@@ -24,7 +23,7 @@ const Button: FC<ButtonProps> = ({ onClick, className, icon, loading, active, di
                 width={40}
                 color="grey"
                 wrapperStyle={{}}
-                wrapperClass={loadingStyle}
+                wrapperClass='loadingStyle'
                 visible={true}
                 ariaLabel='oval-loading'
                 secondaryColor="grey"
