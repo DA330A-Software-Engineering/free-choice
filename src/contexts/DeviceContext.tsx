@@ -1,7 +1,6 @@
 // Device context that take care of the connection between firebase and the API
-import React, {createContext, useContext, FC, useEffect} from 'react';
-import useLocalStorage from '../utils/LocalStorage';
-import { getFirestore, doc, onSnapshot, DocumentSnapshot, collection, getDocs, getDoc, QuerySnapshot, QueryDocumentSnapshot, DocumentData} from "firebase/firestore"
+import React, {createContext, useContext, FC} from 'react';
+import { getFirestore, doc, onSnapshot, DocumentSnapshot, collection, getDocs, QuerySnapshot, DocumentData} from "firebase/firestore"
 
 // API ENDPOINTS, ARE DEFINED IN .env
 const API_ENDPOINT_UPDATE_DEVICE = process.env.API_ENDPOINT_UPDATE_DEVICE || '';
@@ -28,6 +27,7 @@ export interface IDeviceContext {
     startListening: (deviceId: string, onUpdate: {(data: IDevice | null): void}) => void,
     updateDevice: (device: IDevice, token: string) => void,
     getAllDevices: (onGetDocuments: {(value: QuerySnapshot): void}) => void
+    getGroupsFromEmail: (email: string, onGetDocuments: {(value: QuerySnapshot): void}) => void
 }
 
 
@@ -40,6 +40,9 @@ const DeviceContext = createContext<IDeviceContext>({
         throw new Error('Function not implemented.');
     },
     getAllDevices: function (onGetDocuments: (value: QuerySnapshot<DocumentData>) => void): void {
+        throw new Error('Function not implemented.');
+    },
+    getGroupsFromEmail: function (email: string, onGetDocuments: (value: QuerySnapshot<DocumentData>) => void): void {
         throw new Error('Function not implemented.');
     }
 });
@@ -89,6 +92,12 @@ export const DeviceContextProvider: FC<{children: React.ReactElement}> = ({child
         getDocs(ref).then((value: QuerySnapshot) => {onGetDocuments(value)})
     }
 
+    const getGroupsFromEmail = (email: string, onGetDocuments: (value: QuerySnapshot) => void) => {
+        const db = getFirestore();
+        const ref = collection(db, `profiles/${email}/groups`)
+        getDocs(ref).then((value: QuerySnapshot) => {onGetDocuments(value)})
+    }
+
     // Returning the context
     return (
         <DeviceContext.Provider value={
@@ -96,7 +105,8 @@ export const DeviceContextProvider: FC<{children: React.ReactElement}> = ({child
                 // Defining the data that is passed down
                 startListening,
                 updateDevice,
-                getAllDevices
+                getAllDevices,
+                getGroupsFromEmail
             }
         }>
             {children}

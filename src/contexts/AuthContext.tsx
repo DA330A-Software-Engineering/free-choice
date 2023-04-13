@@ -1,5 +1,6 @@
 import React, {createContext, useContext, FC, useEffect} from 'react';
 import useLocalStorage from '../utils/LocalStorage';
+import jwt from 'jwt-decode'
 
 
 // API ENDPOINTS, ARE DEFINED IN .env
@@ -19,7 +20,8 @@ interface IAuthenticationContext {
     logout: (callback: { (data: IAPIResponse): void; }) => void,
     login: (email: string, password: string, callback: { (data: IAPIResponse): void; }) => void,
     signup: (name: string, email: string, password: string, callback: { (data: IAPIResponse): void; }) => void,
-    getToken: () => string | null
+    getToken: () => string | null,
+    getEmail: () => string
 };
 
 
@@ -28,7 +30,8 @@ const AuthenticationContext = createContext<IAuthenticationContext>({
     login: () => null,
     logout: () => null,
     signup: () => null,
-    getToken: () => null
+    getToken: () => null,
+    getEmail: () => ""
 });
 
 
@@ -101,6 +104,16 @@ export const AuthenticationProvider: FC<{children: React.ReactElement}> = ({chil
         });
     };
 
+    /** Get Email from token */
+    const getEmail = (): string =>{
+        const decoded = jwt(token) as { email: string, iat: number };
+        if (decoded) {
+            const email = decoded.email;
+            return email;
+        }
+        return ""
+    }
+
 
     /** Resolve response and map it into an IAPIResponse */
     const resolveResponse = (res: Response, callback: { (data: IAPIResponse): void; }) => {
@@ -132,7 +145,8 @@ export const AuthenticationProvider: FC<{children: React.ReactElement}> = ({chil
         login,
         logout,
         signup,
-        getToken: () => token as string
+        getToken: () => token as string,
+        getEmail
     }
 
     return (
