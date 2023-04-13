@@ -20,6 +20,7 @@ export interface IState {
     open?: boolean;
     locked?: boolean;
     text?: string;
+    tune?: string;
 }
 
 
