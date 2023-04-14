@@ -3,6 +3,8 @@ import { FC, useEffect, useState } from 'react';
 import { IDevice, useDeviceContext } from '../../contexts/DeviceContext';
 import ComponentFromDevice from '../devices/ComponentFromDevice.cmpt';
 import { useAuth } from '../../contexts/AuthContext';
+import Button from '../interactable/Button.cmpt';
+import CreateGroupContainer from './CreateGroupContainer.view';
 
 /** Props for this component */
 type GroupContainerViewProps = {}
@@ -94,7 +96,10 @@ const GroupContainerView: FC<GroupContainerViewProps> = () => {
 
   return (
     <div>
-        <div className='deviceContainerStyle '>
+        <div>
+          <CreateGroupContainer />
+        </div>
+        <div className='deviceContainerStyle'>
             <RenderGroups groups={groups} />
         </div>
     </div>
