@@ -12,7 +12,7 @@ type DoorDeviceProps = {
   unLockIcon: IconDefinition
 }
 
-const OpenLock: FC<DoorDeviceProps> = ({ device, OpenIcon: doorOpenIcon, ClosedIcon: doorClosedIcon, lockIcon, unLockIcon }) => {
+const OpenLockDevice: FC<DoorDeviceProps> = ({ device, OpenIcon: doorOpenIcon, ClosedIcon: doorClosedIcon, lockIcon, unLockIcon }) => {
 	const [Device, setDevice] = useState<IDevice>(device);
 	const [loading, setLoading] = useState<boolean>(false);
 
@@ -67,4 +67,4 @@ const OpenLock: FC<DoorDeviceProps> = ({ device, OpenIcon: doorOpenIcon, ClosedI
 	);
 }
 
-export default OpenLock;
+export default OpenLockDevice;
