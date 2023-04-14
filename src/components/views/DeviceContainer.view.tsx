@@ -31,7 +31,8 @@ const DeviceContainerView: FC<DeviceContainerProps> = () => {
           id: doc.id,
           state: docData.state,
           type: docData.type,
-          name: docData.name
+          name: docData.name,
+          tag: docData.tag
         } 
         data.push(newDevice)
       })

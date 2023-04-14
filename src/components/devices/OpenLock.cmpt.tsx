@@ -23,14 +23,13 @@ const OpenLock: FC<DoorDeviceProps> = ({ device, OpenIcon: doorOpenIcon, ClosedI
 	useEffect( () => {
 		// Start listening on the device
 		deviceContext.startListening(device.id, (newDevice: IDevice | null) => {
-		if (newDevice == null) { throw new Error('Firebase error');}
-
-		// When we have clicked on 'updateDevice' we are goin into a loading state.
-		// When Firebase gets the update leave the loading state and update the button
-		if (loading && ((newDevice.state.locked != Device.state.locked) || (newDevice.state.open != Device.state.open))) {
-			setDevice(newDevice);
-			setLoading(false);
-		} else if ((newDevice.state.locked != Device.state.locked) || (newDevice.state.open != Device.state.open)) { setDevice(newDevice) }
+			if (newDevice == null) { throw new Error('Firebase error');}
+			// When we have clicked on 'updateDevice' we are goin into a loading state.
+			// When Firebase gets the update leave the loading state and update the button
+			if (loading && ((newDevice.state.locked != Device.state.locked) || (newDevice.state.open != Device.state.open))) {
+				setDevice(newDevice);
+				setLoading(false);
+			} else if ((newDevice.state.locked != Device.state.locked) || (newDevice.state.open != Device.state.open)) { setDevice(newDevice) }
 		});
 	}); 
 
