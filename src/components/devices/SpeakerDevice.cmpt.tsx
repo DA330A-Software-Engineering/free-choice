@@ -12,6 +12,7 @@ type SpeakerDeviceProps = {
 
 const SpeakerDevice: FC<SpeakerDeviceProps> = ({ device, playIcon, noTuneSelectedIcon }) => {
 	const [deviceState, setDeviceState] = useState<IDevice>(device);
+	const [selectedTune, setSelectedTune] = useState<string>("");
 
 	const authContext = useAuth();
 	const deviceContext = useDeviceContext();
@@ -38,7 +39,6 @@ const SpeakerDevice: FC<SpeakerDeviceProps> = ({ device, playIcon, noTuneSelecte
 		deviceContext.updateDevice(newDeviceState, authContext.getToken()!);
 	};
 
-	const selectedTune = deviceState.state.tune ?? "";
 	const isLoading = device.id !== deviceState.id;
 
 	return (
@@ -46,8 +46,7 @@ const SpeakerDevice: FC<SpeakerDeviceProps> = ({ device, playIcon, noTuneSelecte
 			<p>{deviceState.name}</p>
 			<div className='deviceStyle'>
 				<select value={selectedTune} onChange={(e) => {
-					const newDeviceState = { ...deviceState, state: { ...deviceState.state, tune: e.target.value } };
-					setDeviceState(newDeviceState);
+					setSelectedTune(e.target.value);
 				}}>
 					<option value="">Select a tune...</option>
 					<option value="alarm">Alarm</option>
