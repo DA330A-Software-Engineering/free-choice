@@ -1,7 +1,10 @@
 import { QueryDocumentSnapshot, QuerySnapshot } from 'firebase/firestore';
-import { FC, useEffect, useState } from 'react';
+import { ChangeEvent, FC, useEffect, useState } from 'react';
 import { IDevice, useDeviceContext } from '../../contexts/DeviceContext';
 import Input from '../interactable/Input.cmpt';
+import { IGroup } from './GroupContainer.view';
+import { useAuth } from '../../contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 /** Props for this component */
 type CreateGroupContainerProps = {}
@@ -13,9 +16,12 @@ const CreateGroupContainer: FC<CreateGroupContainerProps> = () => {
     const [devices, setDevices] = useState<IDevice[]>([]);
     const [devicesInGroup, setDevicesInGroup] = useState<IDevice[]>([]);
     const [groupName, setGroupName] = useState<string>("");
+    const [groupDescription, setGroupDescription] = useState<string>("");
 
     // Init contexts
     const deviceContext = useDeviceContext();
+    const auth = useAuth();
+    const navigate = useNavigate();
 
     useEffect(() => {
     // Get all devices
@@ -70,15 +76,30 @@ const CreateGroupContainer: FC<CreateGroupContainerProps> = () => {
     }
 
     const onCreateGroup = () => {
+        const arrayOfIds: string[] = devicesInGroup.map(obj => obj.id);
+        const newGroup: IGroup = {
+            name: groupName,
+            description: groupDescription,
+            devices: arrayOfIds
+        }
+        deviceContext.createGroup(newGroup, auth.getToken() as string);
 
+        // for now
+        window.location.reload();
+
+        // use this later
+        // navigate("/groups");
     }
     
+    const handleTextareaChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
+        setGroupDescription(e.target.value);
+    };
 
     return (
     <div>
         <div className='deviceContainerStyle'>
             <Input placeholder={'Group Name...'} onChange={(name: string) => setGroupName(name)} />
-            <textarea placeholder='Group Description...'></textarea>
+            <textarea value={groupDescription} onChange={handleTextareaChange} placeholder='Group Description...'></textarea>
             <button disabled={devicesInGroup.length === 0 || groupName.length < 3} onClick={onCreateGroup}>Create Group</button>
         </div>
         <div className='deviceContainerStyle'>

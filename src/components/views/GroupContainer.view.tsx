@@ -1,16 +1,16 @@
 import { QueryDocumentSnapshot, QuerySnapshot } from 'firebase/firestore';
 import { FC, useEffect, useState } from 'react';
 import { IDevice, useDeviceContext } from '../../contexts/DeviceContext';
-import ComponentFromDevice from '../devices/ComponentFromDevice.cmpt';
 import { useAuth } from '../../contexts/AuthContext';
-import Button from '../interactable/Button.cmpt';
 import CreateGroupContainer from './CreateGroupContainer.view';
+import RenderComponentFromDevice from '../utils/RenderComponentFromDevice.utils';
 
 /** Props for this component */
 type GroupContainerViewProps = {}
 
 /** Device Group Interface */
-interface IGroup {
+export interface IGroup {
+    id?: string,
     name: string,
     description: string,
     devices: (string | IDevice)[]
@@ -26,7 +26,6 @@ const GroupContainerView: FC<GroupContainerViewProps> = () => {
   // Init contexts
   const deviceContext = useDeviceContext()
   const authContext = useAuth();
-
 
   useEffect(() => {
     // Map devices into groups
@@ -46,6 +45,7 @@ const GroupContainerView: FC<GroupContainerViewProps> = () => {
         // For each group
         value.forEach((doc: QueryDocumentSnapshot) => {
             const group = doc.data() as IGroup;
+            group.id = doc.id;
             const updatedDevices = group.devices.map((id: string | IDevice) => {
                 if (typeof id === 'string') {
                     id = id.replace(/\s+/g, ''); // Modify the id string to remove spaces
@@ -57,16 +57,22 @@ const GroupContainerView: FC<GroupContainerViewProps> = () => {
             group.devices = updatedDevices;
             newGroups.push(group);
         });
-
         setGroups(newGroups);
         });
     });
   }, []);
 
-  useEffect(() => console.log(groups.length), [groups])
-
   // Render the devices
   const RenderGroups: FC<{groups: IGroup[]}> = ({ groups }) => {
+    const auth = useAuth();
+    const deviceContext = useDeviceContext();
+
+    const onRemoveGroup = (id: string | undefined) => {
+      if (id != undefined) deviceContext.removeGroupById(id, auth.getToken() as string)
+      // for now, later we shulden refresh page
+      window.location.reload();
+    }
+
     return (
       <>
         {groups.map((group: IGroup, index: number) => (
@@ -74,6 +80,7 @@ const GroupContainerView: FC<GroupContainerViewProps> = () => {
             <h1>{group.name}</h1>
             <p>{group.description}</p>
             <RenderDevices group={group} />
+            <button onClick={() => onRemoveGroup(group.id)} >Remove</button>
           </div>
         ))}
       </>
@@ -86,7 +93,7 @@ const GroupContainerView: FC<GroupContainerViewProps> = () => {
       <>
         {group.devices.map((device: string | IDevice, index: number) => {
           if (typeof device !== 'string') {
-            return <ComponentFromDevice device={device} key={index} />;
+            return <RenderComponentFromDevice device={device} key={index} />;
           }
           return null; // Return null for string devices
         })}

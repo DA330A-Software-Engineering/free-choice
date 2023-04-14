@@ -1,7 +1,7 @@
 import { QueryDocumentSnapshot, QuerySnapshot } from 'firebase/firestore';
 import { FC, useEffect, useState } from 'react';
 import { IDevice, useDeviceContext } from '../../contexts/DeviceContext';
-import ComponentFromDevice from '../devices/ComponentFromDevice.cmpt';
+import RenderComponentFromDevice from '../utils/RenderComponentFromDevice.utils';
 
 /** Props for this component */
 type DeviceContainerProps = {}
@@ -21,19 +21,24 @@ const DeviceContainerView: FC<DeviceContainerProps> = () => {
     deviceContext.getAllDevices((value: QuerySnapshot) => {
       const data: IDevice[] = [];
       value.forEach((doc: QueryDocumentSnapshot) => {
-        const docData = doc.data() as IDevice;
-        docData.id = doc.id
-        data.push(docData)
+        const docData = doc.data();
+        let newDevice: IDevice = {
+          id: doc.id,
+          state: docData.state,
+          type: docData.type,
+          name: docData.name,
+          tag: docData.tag
+        } 
+        data.push(newDevice)
       })
       setDevices(data);
     })
   }, [])
 
-
   return (
       <div>
         <div className='deviceContainerStyle'>
-          {devices.map((device: IDevice, index: number) => <ComponentFromDevice device={device} key={index}  />)}
+          {devices.map((device: IDevice, index: number) => <RenderComponentFromDevice device={device} key={index}  />)}
         </div>
       </div>
   )
