@@ -1,4 +1,4 @@
-import { FC, useEffect, useState, useCallback } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { IDevice, useDeviceContext } from '../../contexts/DeviceContext';
 import Button from '../interactable/Button.cmpt';
@@ -11,59 +11,43 @@ type SpeakerDeviceProps = {
 }
 
 const SpeakerDevice: FC<SpeakerDeviceProps> = ({ device, playIcon, noTuneSelectedIcon }) => {
-	const [Device, SetDevice] = useState<IDevice>(device);
-	const [Loading, SetLoading] = useState<boolean>(false);
-	const [speakerState, setSpeakerState] = useState({
-		tune: device.state.tune ?? ""
-	});
-  const [selectedTune, setSelectedTune] = useState<string>("");
+	const [deviceState, setDeviceState] = useState<IDevice>(device);
 
-	const authContext = useAuth()
-	const deviceContext = useDeviceContext()
+	const authContext = useAuth();
+	const deviceContext = useDeviceContext();
 
 	useEffect(() => {
-		deviceContext.startListening(device.id, (device: IDevice | null) => {
-			if (device == null) { throw new Error('Firebase error'); }
+		deviceContext.startListening(device.id, (newDevice: IDevice | null) => {
+			if (newDevice == null) { throw new Error('Firebase error'); }
 
-			setSpeakerState({
-				tune: device.state.tune ?? ""
-			});
-
-			SetLoading(false);
+			if (newDevice.state.tune !== deviceState.state.tune) {
+				setDeviceState(newDevice);
+			}
 		});
-	}, [deviceContext, device.id, speakerState.tune]);
+	}, [deviceContext, device.id, deviceState.state.tune]);
 
 	const onPlayTune = () => {
-		// Make sure a tune is selected
-		if (selectedTune) {
-			SetLoading(true);
-			updateDeviceState({ tune: selectedTune });
-		} else {
-			alert('Please select a tune to play.');
+		if (deviceState.state.tune !== selectedTune) {
+			const newDeviceState = { ...deviceState, state: { ...deviceState.state, tune: selectedTune } };
+			setDeviceState(newDeviceState);
+			updateDeviceState(newDeviceState);
 		}
 	};
 
-	const updateDeviceState = useCallback(
-	(newState: { tune: string }) => {
-		console.log('Updating device state:', newState);
-		SetLoading(true);
-		deviceContext.updateDevice({
-		id: Device.id,
-		state: { tune: newState.tune },
-		type: Device.type,
-		name: Device.name
-		}, authContext.getToken()!);
-	},
-	[Device.id, Device.type, Device.name, deviceContext, authContext]
-	);
+	const updateDeviceState = (newDeviceState: IDevice) => {
+		deviceContext.updateDevice(newDeviceState, authContext.getToken()!);
+	};
+
+	const selectedTune = deviceState.state.tune ?? "";
+	const isLoading = device.id !== deviceState.id;
 
 	return (
 		<div>
-			<p>{Device.name}</p>
+			<p>{deviceState.name}</p>
 			<div className='deviceStyle'>
 				<select value={selectedTune} onChange={(e) => {
-					setSelectedTune(e.target.value);
-					console.log(`Selected tune: ${e.target.value}`);
+					const newDeviceState = { ...deviceState, state: { ...deviceState.state, tune: e.target.value } };
+					setDeviceState(newDeviceState);
 				}}>
 					<option value="">Select a tune...</option>
 					<option value="alarm">Alarm</option>
@@ -75,8 +59,8 @@ const SpeakerDevice: FC<SpeakerDeviceProps> = ({ device, playIcon, noTuneSelecte
 					onClick={onPlayTune}
 					className='deviceButton'
 					icon={selectedTune ? playIcon : noTuneSelectedIcon}
-					loading={Loading}
-					active={!!selectedTune}
+					loading={isLoading}
+					active={selectedTune === deviceState.state.tune}
 				/>
 			</div>
 		</div>
