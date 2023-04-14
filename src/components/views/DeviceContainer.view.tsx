@@ -3,8 +3,7 @@ import { QueryDocumentSnapshot, QuerySnapshot } from 'firebase/firestore';
 import { FC, useEffect, useState } from 'react';
 import { IDevice, useDeviceContext } from '../../contexts/DeviceContext';
 import ToggleDevice from '../devices/ToggleDevice.cmpt';
-import DoorDevice from '../devices/DoorDevice.cmpt';
-import WindowDevice from '../devices/WindowDevice.cmpt';
+import OpenLock from '../devices/OpenLock.cmpt';
 import { faDoorClosed, faLock, faDoorOpen, faUnlock, faToggleOn, faToggleOff } from '@fortawesome/free-solid-svg-icons'
 import Button from '../interactable/Button.cmpt';
 import { BrowserRouter, Route } from 'react-router-dom';
@@ -46,10 +45,15 @@ const DeviceContainerView: FC<DeviceContainerProps> = () => {
     switch (device.type) {
       case 'toggle':
         return <ToggleDevice device={device} activceIcon={faToggleOn} unActivceicon={faToggleOff}/>;
-      case 'window':
-        return <WindowDevice device={device} windowOpenIcon={faDoorOpen} windowClosedIcon={faDoorClosed} lockIcon={faLock} unLockIcon={faUnlock} />;  // FontAwsome dosent have a window icon.
-      case 'door':
-        return <DoorDevice device={device} doorOpenIcon={faDoorOpen} doorClosedIcon={faDoorClosed} lockIcon={faLock} unLockIcon={faUnlock}  />;
+      case 'openLock':
+        switch (device.tag) {
+          case 'door':
+            return <OpenLock device={device} OpenIcon={faDoorOpen} ClosedIcon={faDoorClosed} lockIcon={faLock} unLockIcon={faUnlock}  />;
+          case 'window':
+            return <OpenLock device={device} OpenIcon={faDoorOpen} ClosedIcon={faDoorClosed} lockIcon={faLock} unLockIcon={faUnlock} />;  // FontAwsome dosent have a window icon.
+          default:
+            return null;
+        } 
       default:
         return null;
     }

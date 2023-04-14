@@ -4,18 +4,17 @@ import { IDevice, useDeviceContext } from '../../contexts/DeviceContext';
 import Button from '../interactable/Button.cmpt';
 import { IconDefinition } from '@fortawesome/free-solid-svg-icons';
 
-type WindowDeviceProps = {
+type DoorDeviceProps = {
   device: IDevice,
-  windowOpenIcon: IconDefinition,
-  windowClosedIcon: IconDefinition,
+  OpenIcon: IconDefinition,
+  ClosedIcon: IconDefinition,
   lockIcon: IconDefinition,
   unLockIcon: IconDefinition
 }
 
-const WindowDevice: FC<WindowDeviceProps> = ({ device, windowClosedIcon, windowOpenIcon, lockIcon, unLockIcon }) => {
+const OpenLock: FC<DoorDeviceProps> = ({ device, OpenIcon: doorOpenIcon, ClosedIcon: doorClosedIcon, lockIcon, unLockIcon }) => {
 	const [Device, setDevice] = useState<IDevice>(device);
 	const [loading, setLoading] = useState<boolean>(false);
-
 
 	const authContext = useAuth()
 	const deviceContext = useDeviceContext()
@@ -38,6 +37,7 @@ const WindowDevice: FC<WindowDeviceProps> = ({ device, windowClosedIcon, windowO
 
 	const updateDeviceState = (state: {}) => {
 		setLoading(true);
+		
 		deviceContext.updateDevice({
 			id: Device.id,
 			state: state,
@@ -46,23 +46,26 @@ const WindowDevice: FC<WindowDeviceProps> = ({ device, windowClosedIcon, windowO
 	};
 
 	return (
-
 		<div>
 			<p>{Device.name}</p>
 			<div className='deviceStyle'>
-			<Button
-				onClick={() => updateDeviceState({open: !Device.state.open, locked: Device.state.locked})}
-				className='deviceButton'
-				disabled={!!(!Device.state.open && Device.state.locked)}
-				icon={Device.state.open ? windowOpenIcon : windowClosedIcon} loading={loading} active={!!Device.state.open}/>
-			<Button
-				onClick={() => updateDeviceState({open: Device.state.open, locked: !Device.state.locked})}
-				disabled={!!(Device.state.open && !Device.state.locked)}
-				className='deviceButton'
-				icon={Device.state.locked ? lockIcon : unLockIcon} loading={loading} active={!!Device.state.locked}/>
+				<Button
+					onClick={() => updateDeviceState({open: !Device.state.open, locked: Device.state.locked})}
+					className='deviceButton'
+					loading={loading}
+					disabled={!!(!Device.state.open && Device.state.locked)}
+					active={!!Device.state.open}
+					icon={Device.state.open ? doorOpenIcon : doorClosedIcon}/>
+				<Button
+					onClick={() => updateDeviceState({open: Device.state.open, locked: !Device.state.locked})}
+					className='deviceButton'
+					disabled={!!(Device.state.open && !Device.state.locked)}
+					icon={Device.state.locked ? lockIcon : unLockIcon}
+					loading={loading}
+					active={!!Device.state.locked} />
 			</div>
 		</div>
 	);
 }
 
-export default WindowDevice;
+export default OpenLock;

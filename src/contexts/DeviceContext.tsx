@@ -11,7 +11,8 @@ export interface IDevice {
     id: string,
     state: IState,
     type: string,
-    name?: string
+    name?: string,
+    tag?: string
 }
 
 /** Interface for state of toggle */
