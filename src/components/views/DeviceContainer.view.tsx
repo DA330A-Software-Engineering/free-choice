@@ -4,7 +4,8 @@ import { FC, useEffect, useState } from 'react';
 import { IDevice, useDeviceContext } from '../../contexts/DeviceContext';
 import ToggleDevice from '../devices/ToggleDevice.cmpt';
 import OpenLockDevice from '../devices/OpenLock.cmpt';
-import { faDoorClosed, faLock, faDoorOpen, faUnlock, faToggleOn, faToggleOff } from '@fortawesome/free-solid-svg-icons'
+import { faDoorClosed, faLock, faDoorOpen, faUnlock, faToggleOn, faToggleOff, faPlay, faStopCircle } from '@fortawesome/free-solid-svg-icons'
+import SpeakerDevice from '../devices/SpeakerDevice.cmpt';
 
 /** Props for this component */
 type DeviceContainerProps = {}
@@ -43,7 +44,9 @@ const DeviceContainerView: FC<DeviceContainerProps> = () => {
   const RenderComponentFromDevice: FC<{device: IDevice}> = ({device}) => {
     switch (device.type) {
       case 'toggle':
-        return <ToggleDevice device={device} activceIcon={faToggleOn} unActivceicon={faToggleOff}/>;
+        return <ToggleDevice device={device} activeIcon={faToggleOn} inactiveIcon={faToggleOff} />;
+      case 'buzzer':
+            return <SpeakerDevice device={device} playIcon={faPlay} noTuneSelectedIcon={faStopCircle} />;
       case 'openLock':
         switch (device.tag) {
           case 'door':
