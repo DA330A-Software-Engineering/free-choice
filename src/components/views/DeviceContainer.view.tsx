@@ -5,10 +5,9 @@ import { IDevice, useDeviceContext } from '../../contexts/DeviceContext';
 import ToggleDevice from '../devices/ToggleDevice.cmpt';
 import DoorDevice from '../devices/DoorDevice.cmpt';
 import WindowDevice from '../devices/WindowDevice.cmpt';
-import { faDoorClosed, faLock, faDoorOpen, faUnlock, faToggleOn, faToggleOff, faPlay, faStopCircle } from '@fortawesome/free-solid-svg-icons'
+import { faDoorClosed, faLock, faDoorOpen, faUnlock, faToggleOn, faToggleOff } from '@fortawesome/free-solid-svg-icons'
 import Button from '../interactable/Button.cmpt';
 import { BrowserRouter, Route } from 'react-router-dom';
-import SpeakerDevice from '../devices/SpeakerDevice.cmpt';
 
 /** Props for this component */
 type DeviceContainerProps = {}
@@ -33,7 +32,8 @@ const DeviceContainerView: FC<DeviceContainerProps> = () => {
           id: doc.id,
           state: docData.state,
           type: docData.type,
-          name: docData.name
+          name: docData.name,
+          tag: docData.tag
         } 
         data.push(newDevice)
       })
@@ -46,13 +46,11 @@ const DeviceContainerView: FC<DeviceContainerProps> = () => {
   const RenderComponentFromDevice: FC<{device: IDevice}> = ({device}) => {
     switch (device.type) {
       case 'toggle':
-        return <ToggleDevice device={device} activeIcon={faToggleOn} inactiveIcon={faToggleOff}/>;
+        return <ToggleDevice device={device} activceIcon={faToggleOn} unActivceicon={faToggleOff}/>;
       case 'window':
         return <WindowDevice device={device} windowOpenIcon={faDoorOpen} windowClosedIcon={faDoorClosed} lockIcon={faLock} unLockIcon={faUnlock} />;  // FontAwsome dosent have a window icon.
       case 'door':
-        return <DoorDevice device={device} doorOpenIcon={faDoorOpen} doorClosedIcon={faDoorClosed} lockIcon={faLock} unLockIcon={faUnlock} />;
-      case 'buzzer':
-        return <SpeakerDevice device={device} playIcon={faPlay} noTuneSelectedIcon={faStopCircle} />;
+        return <DoorDevice device={device} doorOpenIcon={faDoorOpen} doorClosedIcon={faDoorClosed} lockIcon={faLock} unLockIcon={faUnlock}  />;
       default:
         return null;
     }

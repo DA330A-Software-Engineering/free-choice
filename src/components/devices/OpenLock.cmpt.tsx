@@ -6,13 +6,13 @@ import { IconDefinition } from '@fortawesome/free-solid-svg-icons';
 
 type DoorDeviceProps = {
   device: IDevice,
-  doorOpenIcon: IconDefinition,
-  doorClosedIcon: IconDefinition,
+  OpenIcon: IconDefinition,
+  ClosedIcon: IconDefinition,
   lockIcon: IconDefinition,
   unLockIcon: IconDefinition
 }
 
-const DoorDevice: FC<DoorDeviceProps> = ({ device, doorOpenIcon, doorClosedIcon, lockIcon, unLockIcon }) => {
+const OpenLockDevice: FC<DoorDeviceProps> = ({ device, OpenIcon: doorOpenIcon, ClosedIcon: doorClosedIcon, lockIcon, unLockIcon }) => {
 	const [Device, setDevice] = useState<IDevice>(device);
 	const [loading, setLoading] = useState<boolean>(false);
 
@@ -23,14 +23,13 @@ const DoorDevice: FC<DoorDeviceProps> = ({ device, doorOpenIcon, doorClosedIcon,
 	useEffect( () => {
 		// Start listening on the device
 		deviceContext.startListening(device.id, (newDevice: IDevice | null) => {
-		if (newDevice == null) { throw new Error('Firebase error');}
-
-		// When we have clicked on 'updateDevice' we are going into a loading state.
-		// When Firebase gets the update leave the loading state and update the button
-		if (loading && ((newDevice.state.locked != Device.state.locked) || (newDevice.state.open != Device.state.open))) {
-			setDevice(newDevice);
-			setLoading(false);
-		} else if ((newDevice.state.locked != Device.state.locked) || (newDevice.state.open != Device.state.open)) { setDevice(newDevice) }
+			if (newDevice == null) { throw new Error('Firebase error');}
+			// When we have clicked on 'updateDevice' we are goin into a loading state.
+			// When Firebase gets the update leave the loading state and update the button
+			if (loading && ((newDevice.state.locked != Device.state.locked) || (newDevice.state.open != Device.state.open))) {
+				setDevice(newDevice);
+				setLoading(false);
+			} else if ((newDevice.state.locked != Device.state.locked) || (newDevice.state.open != Device.state.open)) { setDevice(newDevice) }
 		});
 	}); 
 
@@ -68,4 +67,4 @@ const DoorDevice: FC<DoorDeviceProps> = ({ device, doorOpenIcon, doorClosedIcon,
 	);
 }
 
-export default DoorDevice;
+export default OpenLockDevice;
