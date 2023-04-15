@@ -13,6 +13,8 @@ type SpeakerDeviceProps = {
 const SpeakerDevice: FC<SpeakerDeviceProps> = ({ device, playIcon, noTuneSelectedIcon }) => {
 	const [deviceState, setDeviceState] = useState<IDevice>(device);
 	const [selectedTune, setSelectedTune] = useState<string>("");
+	const [loading, setLoading] = useState<boolean>(false);
+
 
 	const authContext = useAuth();
 	const deviceContext = useDeviceContext();
@@ -23,17 +25,19 @@ const SpeakerDevice: FC<SpeakerDeviceProps> = ({ device, playIcon, noTuneSelecte
 
 			if (newDevice.state.tune !== deviceState.state.tune) {
 				setDeviceState(newDevice);
+				setLoading(false);
 			}
 		});
 	}, [deviceContext, device.id, deviceState.state.tune]);
 
 	const onPlayTune = () => {
-		if (deviceState.state.tune !== selectedTune) {
-			const newDeviceState = { ...deviceState, state: { ...deviceState.state, tune: selectedTune } };
-			console.log('Sending new device state:', newDeviceState);
-			setDeviceState(newDeviceState);
-			updateDeviceState(newDeviceState);
-		}
+	if (deviceState.state.tune !== selectedTune) {
+		const newDeviceState = { ...deviceState, state: { ...deviceState.state, tune: selectedTune } };
+		console.log('Sending new device state:', newDeviceState);
+		setDeviceState(newDeviceState);
+		setLoading(true); // enable loading state
+		updateDeviceState(newDeviceState);
+	}
 	};
 
 	const updateDeviceState = (newDeviceState: IDevice) => {
@@ -42,7 +46,6 @@ const SpeakerDevice: FC<SpeakerDeviceProps> = ({ device, playIcon, noTuneSelecte
 	};
 
 
-	const isLoading = device.id !== deviceState.id;
 
 	return (
 		<div>
@@ -61,7 +64,7 @@ const SpeakerDevice: FC<SpeakerDeviceProps> = ({ device, playIcon, noTuneSelecte
 					onClick={onPlayTune}
 					className='deviceButton'
 					icon={selectedTune ? playIcon : noTuneSelectedIcon}
-					loading={isLoading}
+					loading={loading}
 					active={selectedTune === deviceState.state.tune}
 				/>
 			</div>

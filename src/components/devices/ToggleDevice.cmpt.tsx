@@ -12,7 +12,7 @@ type ToggleDeviceProps = {
   inactiveIcon: IconDefinition
 }
 
-/** Component for a toggable device */
+/** Component for a toggleable device */
 const ToggleDevice: FC<ToggleDeviceProps> = ( {device, activeIcon, inactiveIcon} ) => {
 
   // Device state
@@ -44,10 +44,7 @@ const ToggleDevice: FC<ToggleDeviceProps> = ( {device, activeIcon, inactiveIcon}
   const onButtonClicked = () => {
     // Enable loading state
     // And send the new state to the API
-
-
     setLoading(true);
-
     // Update device
     deviceContext.updateDevice({
       id: Device.id,
