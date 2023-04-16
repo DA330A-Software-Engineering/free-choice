@@ -8,12 +8,12 @@ import { IconDefinition } from '@fortawesome/free-solid-svg-icons'
 /** Props for this component */
 type ToggleDeviceProps = {
   device: IDevice,
-  activceIcon: IconDefinition,
-  unActivceicon: IconDefinition
+  activeIcon: IconDefinition,
+  inactiveIcon: IconDefinition
 }
 
 /** Component for a toggable device */
-const ToggleDevice: FC<ToggleDeviceProps> = ( {device, activceIcon, unActivceicon} ) => {
+const ToggleDevice: FC<ToggleDeviceProps> = ( {device, activeIcon, inactiveIcon} ) => {
 
   // Device state
   const [Device, setDevice] = useState<IDevice>(device);
@@ -65,7 +65,7 @@ const ToggleDevice: FC<ToggleDeviceProps> = ( {device, activceIcon, unActivceico
           disabled={false}
           onClick={onButtonClicked}
           className='deviceButton'
-          icon={!!Device.state.on ? activceIcon : unActivceicon} loading={loading} active={!!Device.state.on}/>
+          icon={!!Device.state.on ? activeIcon : inactiveIcon} loading={loading} active={!!Device.state.on}/>
       </div>
     </div>
   )
