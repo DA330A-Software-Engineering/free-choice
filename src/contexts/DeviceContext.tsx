@@ -23,6 +23,7 @@ export interface IState {
     locked?: boolean;
     text?: string;
     tune?: string;
+    reverse?: boolean;
 }
 
 
@@ -92,7 +93,7 @@ export const DeviceContextProvider: FC<{children: React.ReactElement}> = ({child
                     type: snap.data()?.type,
                     name: snap.data()?.name
                 }
-                console.log("Retriving from firebase: " + JSON.stringify(device));
+                console.log("Retrieving from firebase: " + JSON.stringify(device));
                 onUpdate(device)
             }
         )
