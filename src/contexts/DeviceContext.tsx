@@ -23,6 +23,7 @@ export interface IState {
     locked?: boolean;
     text?: string;
     tune?: string;
+    reverse?: boolean;
 }
 
 
