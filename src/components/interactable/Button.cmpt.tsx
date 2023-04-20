@@ -8,9 +8,9 @@ type ButtonProps = {
     onClick: () => void;
     className?: string;
     icon: IconDefinition,
-    loading: boolean,
-    active: boolean,
-    disabled: boolean
+    loading?: boolean,
+    active?: boolean,
+    disabled?: boolean
 }
 
 /** Custom button */
@@ -35,9 +35,9 @@ const Button: FC<ButtonProps> = ({ onClick, className, icon, loading, active, di
 
     return (
         <>
-          <button disabled={(disabled || loading)} onClick={onClick} className={`${className}`}>
-            { loading ? <Loading /> :  <FontAwesomeIcon fontSize={20} icon={icon} color={'#2D4390'} opacity={disabled ? 0.2 : 1} />}
-          </button>
+            <button disabled={(disabled || loading)} onClick={onClick} className={`${className}`}>
+                { loading ? <Loading /> :  <FontAwesomeIcon fontSize={20} icon={icon} color={'#2D4390'} opacity={disabled ? 0.2 : 1} />}
+            </button>
         </>
     )
 }
