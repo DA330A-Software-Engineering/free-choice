@@ -143,13 +143,12 @@ button:hover {
 }
 
 .keyboardWrapper {
-  width: 220%;
+  width: 200%;
   margin-top: 20px;
-  margin-inline-start: -25%;
 }
 
 .keyboard {
-  width: 230%;
+  width: 100%;
 }
 
 .react-simple-keyboard {
@@ -158,6 +157,8 @@ button:hover {
   padding: 10px;
   border-radius: 5px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 1000px;
 }
 
 .react-simple-keyboard .hg-button {
