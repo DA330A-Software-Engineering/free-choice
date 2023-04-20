@@ -7,6 +7,7 @@ import { faMinus, IconDefinition } from '@fortawesome/free-solid-svg-icons';
 import SimpleKeyboard from 'react-simple-keyboard';
 import 'react-simple-keyboard/build/css/index.css';
 
+
 type ScreenDeviceProps = {
   device: IDevice;
   screenIcon: IconDefinition;
@@ -91,19 +92,20 @@ const ScreenDevice: FC<ScreenDeviceProps> = ({ device, screenIcon }) => {
       </div>
       {showKeyboard && (
         <div className="keyboardWrapper">
-        <SimpleKeyboard
-        layoutName={layoutName}
-        onChange={(input) => onKeyboardInput(input)}
-        onKeyPress={onKeyPress}
-        inputName={"inputString"}
-        inputDisplay={{
-        "inputString": inputString
-        }}
-        />
+          <SimpleKeyboard
+            className="keyboard"
+            layoutName={layoutName}
+            onChange={(input) => onKeyboardInput(input)}
+            onKeyPress={onKeyPress}
+            inputName={"inputString"}
+            inputDisplay={{
+              "inputString": inputString
+            }}
+          />
         </div>
-        )}
-        <p>Current text: {deviceState.state.text}</p>
-        </div>
+      )}
+    <p>Current text: {deviceState.state.text}</p>
+    </div>
   );
 };
 

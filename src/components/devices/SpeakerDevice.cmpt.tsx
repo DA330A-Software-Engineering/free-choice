@@ -39,17 +39,12 @@ const SpeakerDevice: FC<SpeakerDeviceProps> = ({ device, playIcon, noTuneSelecte
 		};
 		console.log("Sending new device state:", newDeviceState);
 		setDeviceState({ ...deviceState, state: { ...deviceState.state, tune: selectedTune } });
-		updateDeviceState(newDeviceState);
+		setLoading(true); 
+		deviceContext.updateDevice(newDeviceState, authContext.getToken()!);
 	}
 	};
 
 
-	const updateDeviceState = async (newDeviceState: IDevice) => {
-	console.log('Updating device state:', newDeviceState);
-	setLoading(true); // Move setLoading(true) to the updateDeviceState function
-	await deviceContext.updateDevice(newDeviceState, authContext.getToken()!);
-	setLoading(false); // Set setLoading(false) after the device state has been updated
-	};
 
 
 
