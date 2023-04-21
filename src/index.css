@@ -145,6 +145,7 @@ button:hover {
 .keyboardWrapper {
   width: 200%;
   margin-top: 20px;
+  margin-inline-start: -80%;
 }
 
 .keyboard {
@@ -158,7 +159,6 @@ button:hover {
   border-radius: 5px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   width: 100%;
-  max-width: 1000px;
 }
 
 .react-simple-keyboard .hg-button {
@@ -196,3 +196,5 @@ button:hover {
 .react-simple-keyboard .hg-button.hg-functionButton:active {
   background-color: #ccc;
 }
+
+
