@@ -37,7 +37,7 @@ const SpeakerDevice: FC<SpeakerDeviceProps> = ({ device, playIcon, noTuneSelecte
 		type: deviceState.type,
 		state: { tune: selectedTune },
 		};
-		console.log("Sending new device state:", newDeviceState);
+
 		setDeviceState({ ...deviceState, state: { ...deviceState.state, tune: selectedTune } });
 		setLoading(true); 
 		deviceContext.updateDevice(newDeviceState, authContext.getToken()!);
