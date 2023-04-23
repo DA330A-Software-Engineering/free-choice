@@ -4,23 +4,26 @@ import { FC, useEffect, useState } from 'react';
 type InputProps = {
     placeholder: string;
     onChange: (value: string) => void;
+    maxLength?: number;
+    onFocus?: () => void; // Add the onFocus prop
+    value?: string;
 }
 
 /** Custom input */
-const Input: FC<InputProps> = ({ placeholder, onChange }) => {
-
-    const [value, SetValue] = useState("");
-
-    useEffect(() => {
-        onChange(value);
-    }, [value]);
-
+const Input: FC<InputProps> = ({ placeholder, value, onChange, maxLength, onFocus }) => {
     return (
         <>
-          <input placeholder={placeholder} value={value} onChange={(e: React.ChangeEvent<HTMLInputElement>) => SetValue(e.target.value)}/>
+        <input
+            placeholder={placeholder}
+            value={value} // Pass the value prop to the input element
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => onChange(e.target.value)}
+            maxLength={maxLength}
+            onFocus={onFocus}
+        />
         </>
-    )
-}
+    );
+};
+
 
 // Export the component
 export default Input

@@ -141,3 +141,60 @@ button:hover {
   padding: 20px;
   text-align: center;
 }
+
+.keyboardWrapper {
+  width: 200%;
+  margin-top: 20px;
+  margin-inline-start: -80%;
+}
+
+.keyboard {
+  width: 100%;
+}
+
+.react-simple-keyboard {
+  background-color: #f5f5f5;
+  font-size: 18px;
+  padding: 10px;
+  border-radius: 5px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  width: 100%;
+}
+
+.react-simple-keyboard .hg-button {
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  margin: 2px;
+  padding: 0;
+  text-align: center;
+  display: inline-block;
+  box-sizing: border-box;
+  color: #333;
+  transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+}
+
+.react-simple-keyboard .hg-button:hover {
+  background-color: #f0f0f0;
+  cursor: pointer;
+}
+
+.react-simple-keyboard .hg-button:active {
+  background-color: #ddd;
+}
+
+.react-simple-keyboard .hg-button.hg-functionButton {
+  background-color: #f5f5f5;
+  border-color: #999;
+  color: #666;
+}
+
+.react-simple-keyboard .hg-button.hg-functionButton:hover {
+  background-color: #ddd;
+}
+
+.react-simple-keyboard .hg-button.hg-functionButton:active {
+  background-color: #ccc;
+}
+
+
