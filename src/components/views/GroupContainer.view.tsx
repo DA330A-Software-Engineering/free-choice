@@ -1,9 +1,12 @@
 import { QueryDocumentSnapshot, QuerySnapshot } from 'firebase/firestore';
 import { FC, useEffect, useState } from 'react';
-import { IDevice, useDeviceContext } from '../../contexts/DeviceContext';
+import { IDevice, IState, useDeviceContext } from '../../contexts/DeviceContext';
 import { useAuth } from '../../contexts/AuthContext';
 import CreateGroupContainer from './CreateGroupContainer.view';
 import RenderComponentFromDevice from '../utils/RenderComponentFromDevice.utils';
+import OpenLockDevice from '../devices/OpenLock.cmpt';
+import { faDoorClosed, faDoorOpen, faLock, faUnlock } from '@fortawesome/free-solid-svg-icons';
+import RenderCorrectGhostDeviceFromGroup from '../utils/RenderCorrectGhostDeviceFromGroup.utils';
 
 /** Props for this component */
 type GroupContainerViewProps = {}
@@ -27,40 +30,42 @@ const GroupContainerView: FC<GroupContainerViewProps> = () => {
   const deviceContext = useDeviceContext()
   const authContext = useAuth();
 
-  useEffect(() => {
-    // Map devices into groups
+  useEffect(() => {getAllDevices()}, []);
+
+
+  const getAllDevices = () => {
     deviceContext.getAllDevices((value: QuerySnapshot) => {
-        const devices: IDevice[] = [];
-        value.forEach((doc: QueryDocumentSnapshot) => {
-            const docData = doc.data() as IDevice;
-            docData.id = doc.id
-            devices.push(docData)
-        });
-    
-        // Get groups
-        const newGroups: IGroup[] = [];
-        const email = authContext.getEmail();
-        deviceContext.getGroupsFromEmail(email, (value: QuerySnapshot) => {
-    
-        // For each group
-        value.forEach((doc: QueryDocumentSnapshot) => {
-            const group = doc.data() as IGroup;
-            group.id = doc.id;
-            const updatedDevices = group.devices.map((id: string | IDevice) => {
-                if (typeof id === 'string') {
-                    id = id.replace(/\s+/g, ''); // Modify the id string to remove spaces
-                    const foundDevice = devices.find((d: IDevice) => d.id === id);
-                    return foundDevice || id; // If foundDevice is null, return the original id
-                }
-                return id;
-            });
-            group.devices = updatedDevices;
-            newGroups.push(group);
-        });
-        setGroups(newGroups);
-        });
-    });
-  }, []);
+      const devices: IDevice[] = [];
+      value.forEach((doc: QueryDocumentSnapshot) => {
+          const docData = doc.data() as IDevice;
+          docData.id = doc.id
+          devices.push(docData)
+      });
+  
+      // Get groups
+      const newGroups: IGroup[] = [];
+      const email = authContext.getEmail();
+      deviceContext.getGroupsFromEmail(email, (value: QuerySnapshot) => {
+  
+      // For each group
+      value.forEach((doc: QueryDocumentSnapshot) => {
+          const group = doc.data() as IGroup;
+          group.id = doc.id;
+          const updatedDevices = group.devices.map((id: string | IDevice) => {
+              if (typeof id === 'string') {
+                  id = id.replace(/\s+/g, ''); // Modify the id string to remove spaces
+                  const foundDevice = devices.find((d: IDevice) => d.id === id);
+                  return foundDevice || id; // If foundDevice is null, return the original id
+              }
+              return id;
+          });
+          group.devices = updatedDevices;
+          newGroups.push(group);
+      });
+      setGroups(newGroups);
+      });
+  });
+  }
 
   // Render the devices
   const RenderGroups: FC<{groups: IGroup[]}> = ({ groups }) => {
@@ -72,15 +77,18 @@ const GroupContainerView: FC<GroupContainerViewProps> = () => {
       // for now, later we shulden refresh page
       window.location.reload();
     }
-
     return (
       <>
-        {groups.map((group: IGroup, index: number) => (
+        {
+        
+        groups.map((group: IGroup, index: number) => (
+          
           <div key={index} className='deviceGroupStyle'>
             <h1>{group.name}</h1>
             <p>{group.description}</p>
             <RenderDevices group={group} />
-            <button onClick={() => onRemoveGroup(group.id)} >Remove</button>
+            <button onClick={() => onRemoveGroup(group.id)}>Remove</button>
+            <RenderCorrectGhostDeviceFromGroup group={group} />
           </div>
         ))}
       </>
@@ -88,12 +96,12 @@ const GroupContainerView: FC<GroupContainerViewProps> = () => {
   };
 
   // Render the groups
-  const RenderDevices: FC<{ group: IGroup }> = ({ group }) => {
+  const RenderDevices: FC<{ group: IGroup}> = ({ group }) => {
     return (
       <>
         {group.devices.map((device: string | IDevice, index: number) => {
           if (typeof device !== 'string') {
-            return <RenderComponentFromDevice device={device} key={index} />;
+            return <RenderComponentFromDevice device={device} key={index} componentUpdated={() => getAllDevices()} />;
           }
           return null; // Return null for string devices
         })}

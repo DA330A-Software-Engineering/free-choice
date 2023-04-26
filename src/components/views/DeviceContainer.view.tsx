@@ -42,7 +42,7 @@ const DeviceContainerView: FC<DeviceContainerProps> = () => {
   return (
       <div>
         <div className='deviceContainerStyle'>
-          {devices.map((device: IDevice, index: number) => <RenderComponentFromDevice device={device} key={index}  />)}
+          {devices.map((device: IDevice, index: number) => <RenderComponentFromDevice device={device} key={index} componentUpdated={() => null}  />)}
         </div>
       </div>
   )

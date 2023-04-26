@@ -1,6 +1,6 @@
 import { FC, useEffect, useState } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
-import { IDevice, useDeviceContext } from '../../contexts/DeviceContext';
+import { IDevice, IState, useDeviceContext } from '../../contexts/DeviceContext';
 import Button from '../interactable/Button.cmpt';
 import { IconDefinition } from '@fortawesome/free-solid-svg-icons';
 
@@ -9,10 +9,13 @@ type DoorDeviceProps = {
   OpenIcon: IconDefinition,
   ClosedIcon: IconDefinition,
   lockIcon: IconDefinition,
-  unLockIcon: IconDefinition
+  unLockIcon: IconDefinition,
+  onReceiveUpdate?: (device: IDevice) => void
+  ghostComponent?: boolean,
+  ghostUpdateDeviceCallback?: (state: IState) => void
 }
 
-const OpenLockDevice: FC<DoorDeviceProps> = ({ device, OpenIcon: doorOpenIcon, ClosedIcon: doorClosedIcon, lockIcon, unLockIcon }) => {
+const OpenLockDevice: FC<DoorDeviceProps> = ({ device, OpenIcon: doorOpenIcon, ClosedIcon: doorClosedIcon, lockIcon, unLockIcon, ghostComponent, ghostUpdateDeviceCallback, onReceiveUpdate}) => {
 	const [Device, setDevice] = useState<IDevice>(device);
 	const [loading, setLoading] = useState<boolean>(false);
 
@@ -21,6 +24,7 @@ const OpenLockDevice: FC<DoorDeviceProps> = ({ device, OpenIcon: doorOpenIcon, C
 
 	// On Component Mount
 	useEffect( () => {
+		if (ghostComponent) return;
 		// Start listening on the device
 		deviceContext.startListening(device.id, (newDevice: IDevice | null) => {
 			if (newDevice == null) { throw new Error('Firebase error');}
@@ -29,14 +33,24 @@ const OpenLockDevice: FC<DoorDeviceProps> = ({ device, OpenIcon: doorOpenIcon, C
 			if (loading && ((newDevice.state.locked != Device.state.locked) || (newDevice.state.open != Device.state.open))) {
 				setDevice(newDevice);
 				setLoading(false);
-			} else if ((newDevice.state.locked != Device.state.locked) || (newDevice.state.open != Device.state.open)) { setDevice(newDevice) }
+			} else if ((newDevice.state.locked != Device.state.locked) || (newDevice.state.open != Device.state.open)) { 
+				if (typeof onReceiveUpdate !== 'undefined') onReceiveUpdate(newDevice);
+				setDevice(newDevice) 
+			}
 		});
 	}); 
 
 
 	const updateDeviceState = (state: {}) => {
-		setLoading(true);
 		
+		
+		if (ghostComponent) {
+			if (typeof ghostUpdateDeviceCallback === 'undefined') return;
+			ghostUpdateDeviceCallback(state)
+			return;
+		};
+
+		setLoading(true);
 		deviceContext.updateDevice({
 			id: Device.id,
 			state: state,

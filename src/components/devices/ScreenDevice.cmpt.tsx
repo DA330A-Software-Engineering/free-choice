@@ -1,6 +1,6 @@
 import { FC, useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
-import { IDevice, useDeviceContext } from '../../contexts/DeviceContext';
+import { IDevice, IState, useDeviceContext } from '../../contexts/DeviceContext';
 import Button from '../interactable/Button.cmpt';
 import Input from '../interactable/Input.cmpt';
 import { faMinus, IconDefinition } from '@fortawesome/free-solid-svg-icons';
@@ -11,9 +11,12 @@ import 'react-simple-keyboard/build/css/index.css';
 type ScreenDeviceProps = {
   device: IDevice;
   screenIcon: IconDefinition;
+  onReceiveUpdate?: (device: IDevice) => void
+  ghostComponent?: boolean,
+  ghostUpdateDeviceCallback?: (state: IState) => void
 };
 
-const ScreenDevice: FC<ScreenDeviceProps> = ({ device, screenIcon }) => {
+const ScreenDevice: FC<ScreenDeviceProps> = ({ device, screenIcon, ghostComponent, ghostUpdateDeviceCallback, onReceiveUpdate }) => {
   const [inputString, setInputString] = useState('');
   const [deviceState, setDeviceState] = useState<IDevice>(device);
   const [loading, setLoading] = useState(false);
@@ -24,9 +27,11 @@ const ScreenDevice: FC<ScreenDeviceProps> = ({ device, screenIcon }) => {
   const deviceContext = useDeviceContext();
 
   useEffect(() => {
+    if(ghostComponent) return;
     deviceContext.startListening(device.id, (newDevice: IDevice | null) => {
       if (newDevice == null) { throw new Error('Firebase error'); }
       if (newDevice.state.text !== deviceState.state.text) {
+        if (typeof onReceiveUpdate !== 'undefined') onReceiveUpdate(newDevice);
         setDeviceState(newDevice);
         setLoading(false);
       }
@@ -35,6 +40,14 @@ const ScreenDevice: FC<ScreenDeviceProps> = ({ device, screenIcon }) => {
 
   const handleSubmit = () => {
     if (deviceState.state.text !== inputString) {
+
+      if(ghostComponent) {
+        if (typeof ghostUpdateDeviceCallback === 'undefined') return;
+        ghostUpdateDeviceCallback( {"text": inputString})
+        return;
+      }
+  
+
       const newDeviceState = {
         id: deviceState.id,
         type: deviceState.type,

@@ -143,9 +143,10 @@ button:hover {
 }
 
 .keyboardWrapper {
-  width: 200%;
-  margin-top: 20px;
-  margin-inline-start: -80%;
+  position: absolute;
+  width: 800px;
+  margin-top: 50px;
+  z-index: 999999;
 }
 
 .keyboard {

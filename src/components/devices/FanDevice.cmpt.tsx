@@ -1,6 +1,6 @@
 import { FC, useEffect, useState } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
-import { IDevice, useDeviceContext } from '../../contexts/DeviceContext';
+import { IDevice, IState, useDeviceContext } from '../../contexts/DeviceContext';
 import Button from '../interactable/Button.cmpt';
 import { IconDefinition } from '@fortawesome/free-solid-svg-icons';
 
@@ -9,10 +9,13 @@ type FanDeviceProps = {
 	fanOnIcon: IconDefinition,
 	fanOffIcon: IconDefinition,
 	ReverseFalseIcon: IconDefinition,
-	ReverseTrueIcon: IconDefinition
+	ReverseTrueIcon: IconDefinition,
+	onReceiveUpdate?: (device: IDevice) => void
+	ghostComponent?: boolean,
+	ghostUpdateDeviceCallback?: (state: IState) => void
 }
 
-const FanDevice: FC<FanDeviceProps> = ({ device, fanOnIcon, fanOffIcon, ReverseFalseIcon, ReverseTrueIcon }) => {
+const FanDevice: FC<FanDeviceProps> = ({ device, fanOnIcon, fanOffIcon, ReverseFalseIcon, ReverseTrueIcon, onReceiveUpdate, ghostComponent, ghostUpdateDeviceCallback }) => {
 	const [Device, setDevice] = useState<IDevice>(device);
 	const [loading, setLoading] = useState<boolean>(false);
 
@@ -20,16 +23,26 @@ const FanDevice: FC<FanDeviceProps> = ({ device, fanOnIcon, fanOffIcon, ReverseF
 	const deviceContext = useDeviceContext()
 
 	useEffect(() => {
-    deviceContext.startListening(device.id, (newDevice: IDevice | null) => {
-		if (newDevice == null) { throw new Error('Firebase error');}
-		if (loading && ((newDevice.state.on !== Device.state.on) || (newDevice.state.reverse !== Device.state.reverse))) {
-        setDevice(newDevice);
-        setLoading(false);
-		} else if ((newDevice.state.on !== Device.state.on) || (newDevice.state.reverse !== Device.state.reverse)) { setDevice(newDevice) }
+		if (ghostComponent) return;
+		deviceContext.startListening(device.id, (newDevice: IDevice | null) => {
+			if (newDevice == null) { throw new Error('Firebase error');}
+			if (loading && ((newDevice.state.on !== Device.state.on) || (newDevice.state.reverse !== Device.state.reverse))) {
+			setDevice(newDevice);
+			setLoading(false);
+			} else if ((newDevice.state.on !== Device.state.on) || (newDevice.state.reverse !== Device.state.reverse)) { 
+				if (typeof onReceiveUpdate !== 'undefined') onReceiveUpdate(newDevice);
+				setDevice(newDevice) 
+			}
     });
 });
 
 	const updateDeviceState = (state: {}) => {
+	if (ghostComponent) {
+		if (typeof ghostUpdateDeviceCallback === 'undefined') return;
+		ghostUpdateDeviceCallback(state)
+		return;
+	};
+
 	setLoading(true);
     
     deviceContext.updateDevice({
