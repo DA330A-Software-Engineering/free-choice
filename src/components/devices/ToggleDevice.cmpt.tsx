@@ -1,6 +1,6 @@
 import { FC, useEffect, useState } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
-import { IDevice, useDeviceContext } from '../../contexts/DeviceContext';
+import { IDevice, IState, useDeviceContext } from '../../contexts/DeviceContext';
 import Button from '../interactable/Button.cmpt';
 import { IconDefinition } from '@fortawesome/free-solid-svg-icons'
 
@@ -9,11 +9,14 @@ import { IconDefinition } from '@fortawesome/free-solid-svg-icons'
 type ToggleDeviceProps = {
   device: IDevice,
   activeIcon: IconDefinition,
-  inactiveIcon: IconDefinition
+  inactiveIcon: IconDefinition,
+  onReceiveUpdate?: (device: IDevice) => void
+  ghostComponent?: boolean,
+  ghostUpdateDeviceCallback?: (state: IState) => void
 }
 
 /** Component for a toggable device */
-const ToggleDevice: FC<ToggleDeviceProps> = ( {device, activeIcon, inactiveIcon} ) => {
+const ToggleDevice: FC<ToggleDeviceProps> = ( {device, activeIcon, inactiveIcon, ghostComponent, ghostUpdateDeviceCallback, onReceiveUpdate} ) => {
 
   // Device state
   const [Device, setDevice] = useState<IDevice>(device);
@@ -26,17 +29,19 @@ const ToggleDevice: FC<ToggleDeviceProps> = ( {device, activeIcon, inactiveIcon}
 
   // On Component Mount
   useEffect( () => {
+    if(ghostComponent) return;
     // Start listening on the device
     deviceContext.startListening(device.id, (newDevice: IDevice | null) => {
       if (newDevice == null) { throw new Error('Firebase error');}
-
       // When we have clicked on 'updateDevice' we are goin into a loading state.
       // When Firebase gets the update leave the loading state and update the button
       if (loading && (newDevice.state.on != Device.state.on)) {
-        console.log('Update')
         setDevice(newDevice);
         setLoading(false);
-      } else if (newDevice.state.on != Device.state.on) { setDevice(newDevice) }
+      } else if (newDevice.state.on != Device.state.on) { 
+        if (typeof onReceiveUpdate !== 'undefined') onReceiveUpdate(newDevice);
+        setDevice(newDevice) 
+      }
     });
   }); 
 
@@ -44,7 +49,12 @@ const ToggleDevice: FC<ToggleDeviceProps> = ( {device, activeIcon, inactiveIcon}
   const onButtonClicked = () => {
     // Enable loading state
     // And send the new state to the API
-
+    
+    if(ghostComponent) {
+      if (typeof ghostUpdateDeviceCallback === 'undefined') return;
+      ghostUpdateDeviceCallback( {"on": !Device.state.on})
+      return;
+    }
 
     setLoading(true);
 
