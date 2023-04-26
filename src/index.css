@@ -198,3 +198,59 @@ button:hover {
 }
 
 
+.deviceSelector {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.deviceButton {
+  padding: 10px 20px;
+  font-size: 1rem;
+  background-color: #fff;
+  color: #000;
+  border: 1px solid #007bff;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.deviceButton.selected {
+  background-color: #007bff;
+  color: #fff;
+}
+
+
+.routine-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding-top: 3%;
+  margin-left: 20%;
+  margin-right: 20%;
+}
+
+.routine-input {
+  width: 100%;
+  padding: 10px;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.routine-create-btn {
+  padding: 10px 20px;
+  font-size: 1rem;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.routine-create-btn:hover {
+  background-color: #0056b3;
+}

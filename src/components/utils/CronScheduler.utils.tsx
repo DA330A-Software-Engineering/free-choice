@@ -12,7 +12,13 @@ export class CronScheduler {
 		return CronScheduler.instance;
 	}
 
-	public createCronJob(dayOfWeek: number, hour: number, minute: number, toggleDevice: (deviceId: string) => void, deviceId: string): CronJob {
+	public createCronJob(
+		dayOfWeek: number,
+		hour: number,
+		minute: number,
+		toggleDevice: (deviceId: string) => void,
+		deviceId: string
+	): CronJob {
 		const cronTime = `0 ${minute} ${hour} * * ${dayOfWeek}`;
 		const job = new CronJob(cronTime, () => toggleDevice(deviceId));
 		job.start();
