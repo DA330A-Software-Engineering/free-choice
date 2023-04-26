@@ -37,11 +37,16 @@ const SpeakerDevice: FC<SpeakerDeviceProps> = ({ device, playIcon, noTuneSelecte
 
 	const onPlayTune = () => {
 	if (deviceState.state.tune !== selectedTune) {
-		const newDeviceState = { ...deviceState, state: { ...deviceState.state, tune: selectedTune } };
-		console.log('Sending new device state:', newDeviceState);
-		setDeviceState(newDeviceState);
-		setLoading(true); // enable loading state
-		updateDeviceState(newDeviceState);
+
+		const newDeviceState = {
+		id: deviceState.id,
+		type: deviceState.type,
+		state: { tune: selectedTune },
+		};
+
+		setDeviceState({ ...deviceState, state: { ...deviceState.state, tune: selectedTune } });
+		setLoading(true); 
+		updateDeviceState(newDeviceState)
 	}
 	};
 
