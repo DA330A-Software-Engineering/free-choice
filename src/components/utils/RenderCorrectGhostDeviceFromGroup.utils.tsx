@@ -1,4 +1,4 @@
-import { faDoorOpen, faDoorClosed, faLock, faUnlock, faToggleOn, faToggleOff, faL, faFan, faArrowLeft, faArrowRight, faPlay, faStopCircle } from "@fortawesome/free-solid-svg-icons"
+import { faDoorOpen, faDoorClosed, faLock, faUnlock, faToggleOn, faToggleOff, faL, faFan, faArrowLeft, faArrowRight, faPlay, faStopCircle, faCommentDots } from "@fortawesome/free-solid-svg-icons"
 import { FC, useState } from "react"
 import OpenLockDevice from "../devices/OpenLock.cmpt"
 import { IGroup } from "../views/GroupContainer.view"
@@ -7,6 +7,7 @@ import ToggleDevice from "../devices/ToggleDevice.cmpt"
 import { useAuth } from "../../contexts/AuthContext"
 import FanDevice from "../devices/FanDevice.cmpt"
 import SpeakerDevice from "../devices/SpeakerDevice.cmpt"
+import ScreenDevice from "../devices/ScreenDevice.cmpt"
 
 
 const RenderCorrectGhostDeviceFromGroup: FC<{group: IGroup}> = ({group}) => {
@@ -133,6 +134,16 @@ const RenderCorrectGhostDeviceFromGroup: FC<{group: IGroup}> = ({group}) => {
                     playIcon={faPlay} noTuneSelectedIcon={faStopCircle} />
             )
         
+        case 'screen':
+
+            return (
+                <ScreenDevice 
+                    device={ghostDevice}
+                    ghostComponent={true}
+                    ghostUpdateDeviceCallback={(newState: IState) => { updateDevices(newState, group.devices as IDevice[]) } } 
+                    screenIcon={faCommentDots} />
+            )
+
         default:
             return null;
     }

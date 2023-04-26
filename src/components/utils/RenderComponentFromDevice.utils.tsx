@@ -17,7 +17,7 @@ switch (device.type) {
     case 'buzzer':
       return <SpeakerDevice device={device } playIcon={faPlay} noTuneSelectedIcon={faStopCircle} onReceiveUpdate={(d) => componentUpdated(d)} />
     case 'screen':
-      return <ScreenDevice device={device} screenIcon={faCommentDots} />
+      return <ScreenDevice device={device} screenIcon={faCommentDots} onReceiveUpdate={(d) => componentUpdated(d)} />
     case 'openLock':
     switch (device.tag) {
         case 'door':
