@@ -1,52 +1,52 @@
 // CustomTimePicker.tsx
 
-import React, { useState } from 'react';
-import moment from 'moment';
+import React, { useState } from "react";
+import moment from "moment";
 
 interface ICustomTimePickerProps {
-	onChange: (time: moment.Moment) => void;
-	}
+  onChange: (time: moment.Moment) => void;
+}
 
-	const CustomTimePicker: React.FC<ICustomTimePickerProps> = ({ onChange }) => {
-	const [time, setTime] = useState<moment.Moment>(moment());
+const CustomTimePicker: React.FC<ICustomTimePickerProps> = ({ onChange }) => {
+  const [time, setTime] = useState<moment.Moment>(moment());
 
-	const increaseHour = () => {
-		setTime(time.clone().add(1, 'hour'));
-		onChange(time.clone().add(1, 'hour'));
-	};
+  const increaseHour = () => {
+    setTime(time.clone().add(1, "hour"));
+    onChange(time.clone().add(1, "hour"));
+  };
 
-	const decreaseHour = () => {
-		setTime(time.clone().subtract(1, 'hour'));
-		onChange(time.clone().subtract(1, 'hour'));
-	};
+  const decreaseHour = () => {
+    setTime(time.clone().subtract(1, "hour"));
+    onChange(time.clone().subtract(1, "hour"));
+  };
 
-	const increaseMinute = () => {
-		setTime(time.clone().add(1, 'minute'));
-		onChange(time.clone().add(1, 'minute'));
-	};
+  const increaseMinute = () => {
+    setTime(time.clone().add(1, "minute"));
+    onChange(time.clone().add(1, "minute"));
+  };
 
-	const decreaseMinute = () => {
-		setTime(time.clone().subtract(1, 'minute'));
-		onChange(time.clone().subtract(1, 'minute'));
-	};
+  const decreaseMinute = () => {
+    setTime(time.clone().subtract(1, "minute"));
+    onChange(time.clone().subtract(1, "minute"));
+  };
 
- return (
-    <div>
-      <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 10 }}>
-        <button onClick={decreaseHour} style={{ padding: '10px 20px', fontSize: '1rem' }}>
+  return (
+    <div className="custom-time-picker">
+      <div className="time-picker-row">
+        <button className="time-picker-button" onClick={decreaseHour}>
           -
         </button>
-        <div style={{ width: 50, textAlign: 'center', fontSize: '2rem' }}>{time.format('HH')}</div>
-        <button onClick={increaseHour} style={{ padding: '10px 20px', fontSize: '1rem' }}>
+        <div className="time-picker-display">{time.format("HH")}</div>
+        <button className="time-picker-button" onClick={increaseHour}>
           +
         </button>
       </div>
-      <div style={{ display: 'flex', justifyContent: 'center' }}>
-        <button onClick={decreaseMinute} style={{ padding: '10px 20px', fontSize: '1rem' }}>
+      <div className="time-picker-row">
+        <button className="time-picker-button" onClick={decreaseMinute}>
           -
         </button>
-        <div style={{ width: 50, textAlign: 'center', fontSize: '2rem' }}>{time.format('mm')}</div>
-        <button onClick={increaseMinute} style={{ padding: '10px 20px', fontSize: '1rem' }}>
+        <div className="time-picker-display">{time.format("mm")}</div>
+        <button className="time-picker-button" onClick={increaseMinute}>
           +
         </button>
       </div>

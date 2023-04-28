@@ -1,13 +1,18 @@
 // WeekDayPicker.tsx
 
-import React from 'react';
+import React from "react";
 
 type WeekDayPickerProps = {
   selectedDays: Set<number>;
   onChange: (selectedDays: Set<number>) => void;
 };
 
-const WeekDayPicker: React.FC<WeekDayPickerProps> = ({ selectedDays, onChange }) => {
+const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+
+const WeekDayPicker: React.FC<WeekDayPickerProps> = ({
+  selectedDays,
+  onChange,
+}) => {
   const handleClick = (day: number) => {
     const newSelectedDays = new Set(selectedDays);
     if (selectedDays && selectedDays.has(day)) {
@@ -18,20 +23,14 @@ const WeekDayPicker: React.FC<WeekDayPickerProps> = ({ selectedDays, onChange })
     onChange(newSelectedDays);
   };
 
-  const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-
   return (
-    <div style={{ display: 'flex', justifyContent: 'center' }}>
+    <div className="weekday-picker">
       {days.map((day, index) => (
         <button
           key={index}
-          style={{
-            marginRight: 5,
-            padding: '10px 20px',
-            fontSize: '2rem',
-            backgroundColor: selectedDays.has(index) ? '#007bff' : '',
-            color: selectedDays.has(index) ? 'white' : '',
-          }}
+          className={`weekday-picker-button ${
+            selectedDays.has(index) ? "selected" : ""
+          }`}
           onClick={() => handleClick(index)}
         >
           {day}

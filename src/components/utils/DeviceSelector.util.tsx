@@ -1,7 +1,6 @@
-// DeviceSelector.tsx
-
-import React, { FC, useState } from 'react';
-import { IDevice } from '../../contexts/DeviceContext';
+import React, { FC, useState } from "react";
+import { IDevice } from "../../contexts/DeviceContext";
+import RenderComponentForRoutine from "./RenderComponentForRoutine.utils";
 
 interface IDeviceSelectorProps {
   devices: IDevice[];
@@ -14,39 +13,81 @@ const DeviceSelector: FC<IDeviceSelectorProps> = ({
   onDeviceSelected,
   renderAsButtons = false,
 }) => {
-  const [selectedDeviceId, setSelectedDeviceId] = useState<string | null>(null);
+  const [selectedDevice, setSelectedDevice] = useState<IDevice | null>(null);
 
   if (renderAsButtons) {
     const handleClick = (device: IDevice) => {
-      setSelectedDeviceId(device.id);
+      setSelectedDevice(device);
       onDeviceSelected(device);
     };
 
     return (
-      <div className="deviceSelector">
-        {devices.map((device, index) => (
+      <div className="device-selector">
+        {devices.map((device) => (
           <button
-            key={index}
-            className={`deviceButton${selectedDeviceId === device.id ? ' selected' : ''}`}
+            key={device.id}
+            className={`device-button${
+              selectedDevice && selectedDevice.id === device.id
+                ? " selected"
+                : ""
+            }`}
             onClick={() => handleClick(device)}
           >
             {device.name}
           </button>
         ))}
+        {selectedDevice && (
+          <>
+            <RenderComponentForRoutine
+              device={selectedDevice}
+              onStateChange={(newState: any) =>
+                setSelectedDevice({
+                  ...selectedDevice,
+                  state: newState,
+                })
+              }
+            />
+          </>
+        )}
       </div>
     );
   } else {
     return (
-      <select onChange={(e) => onDeviceSelected(devices[e.target.selectedIndex])}>
-        <option key={-1} value="">
-          Select a device
-        </option>
-        {devices.map((device, index) => (
-          <option key={index} value={index}>
-            {device.name}
+      <>
+        <select
+          onChange={(e) => {
+            const selectedIndex = e.target.selectedIndex;
+            const selectedDevice =
+              selectedIndex > 0 ? devices[selectedIndex - 1] : null;
+            setSelectedDevice(selectedDevice);
+            if (selectedDevice) {
+              onDeviceSelected(selectedDevice);
+            }
+          }}
+        >
+          <option key={-1} value="">
+            Select a device
           </option>
-        ))}
-      </select>
+          {devices.map((device) => (
+            <option key={device.id} value={device.id}>
+              {device.name}
+            </option>
+          ))}
+        </select>
+        {selectedDevice && (
+          <>
+            <RenderComponentForRoutine
+              device={selectedDevice}
+              onStateChange={(newState: any) =>
+                setSelectedDevice({
+                  ...selectedDevice,
+                  state: newState,
+                })
+              }
+            />
+          </>
+        )}
+      </>
     );
   }
 };

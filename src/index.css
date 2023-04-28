@@ -254,3 +254,55 @@ button:hover {
 .routine-create-btn:hover {
   background-color: #0056b3;
 }
+
+.weekday-picker {
+  display: flex;
+  justify-content: center;
+}
+
+.weekday-picker-button {
+  margin-right: 5px;
+  padding: 10px 20px;
+  font-size: 2rem;
+  background-color: transparent;
+  color: inherit;
+}
+
+.weekday-picker-button.selected {
+  background-color: #007bff;
+  color: white;
+}
+
+.custom-time-picker .time-picker-row {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 10px;
+}
+
+.custom-time-picker .time-picker-button {
+  padding: 10px 20px;
+  font-size: 1rem;
+}
+
+.custom-time-picker .time-picker-display {
+  width: 50px;
+  text-align: center;
+  font-size: 2rem;
+}
+
+.device-selector {
+  display: flex;
+  justify-content: center;
+}
+
+.device-button {
+  padding: 10px 20px;
+  font-size: 1rem;
+  margin-right: 5px;
+}
+
+.device-button.selected {
+  background-color: #007bff;
+  color: white;
+}
+
