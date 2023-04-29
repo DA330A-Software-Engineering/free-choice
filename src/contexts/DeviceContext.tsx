@@ -11,7 +11,6 @@ import {
   DocumentData,
 } from "firebase/firestore";
 import { IGroup } from "../components/views/GroupContainer.view";
-import { CronJob } from 'cron';
 
 // API ENDPOINTS, ARE DEFINED IN .env
 const API_ENDPOINT_UPDATE_DEVICE = process.env.API_ENDPOINT_UPDATE_DEVICE || "";
@@ -44,7 +43,11 @@ export interface IRoutine {
   schedule: string; // Cron expression, not sure what's going on here, but it should be based on the weekdays of the week.
   repeatable: boolean; // Toggleable by checkbox
   enabled: boolean; // Toggleable by checkbox
-  actions: IAction[];
+  actions: {
+    id: string; // Change this line
+    type: "toggle" | "openLock" | "fan" | "screen" | "buzzer";
+    state: Record<string, string | boolean>;
+  }[];
 }
 
 

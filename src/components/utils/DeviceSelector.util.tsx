@@ -1,7 +1,10 @@
 import React, { FC, useState } from "react";
 import { IDevice } from "../../contexts/DeviceContext";
-import RenderComponentForRoutine from "./RenderComponentForRoutine.utils";
-
+import BuzzerControl from "../interactable/DeviceControls/BuzzerControl.cmpt";
+import FanControl from "../interactable/DeviceControls/FanControl.cmpt";
+import OpenLockControl from "../interactable/DeviceControls/OpenLockControl.cmpt";
+import ScreenControl from "../interactable/DeviceControls/ScreenControl.cmpt";
+import ToggleControl from "../interactable/DeviceControls/ToggleControl.cmpt";
 interface IDeviceSelectorProps {
   devices: IDevice[];
   onDeviceSelected: (selectedDevice: IDevice) => void;
@@ -14,6 +17,63 @@ const DeviceSelector: FC<IDeviceSelectorProps> = ({
   renderAsButtons = false,
 }) => {
   const [selectedDevice, setSelectedDevice] = useState<IDevice | null>(null);
+
+  const renderControl = (device: IDevice) => {
+    switch (device.type) {
+      case "buzzer":
+        return (
+          <BuzzerControl
+            state={device.state}
+            onStateChange={(newState) => {
+              setSelectedDevice({ ...device, state: newState });
+              onDeviceSelected({ ...device, state: newState });
+            }}
+          />
+        );
+      case "screen":
+        return (
+          <ScreenControl
+            state={device.state}
+            onStateChange={(newState) => {
+              setSelectedDevice({ ...device, state: newState });
+              onDeviceSelected({ ...device, state: newState });
+            }}
+          />
+        );
+      case "fan":
+        return (
+          <FanControl
+            state={device.state}
+            onStateChange={(newState) => {
+              setSelectedDevice({ ...device, state: newState });
+              onDeviceSelected({ ...device, state: newState });
+            }}
+          />
+        );
+      case "openLock":
+        return (
+          <OpenLockControl
+            state={device.state}
+            onStateChange={(newState) => {
+              setSelectedDevice({ ...device, state: newState });
+              onDeviceSelected({ ...device, state: newState });
+            }}
+          />
+        );
+      case "toggle":
+        return (
+          <ToggleControl
+            state={device.state}
+            onStateChange={(newState) => {
+              setSelectedDevice({ ...device, state: newState });
+              onDeviceSelected({ ...device, state: newState });
+            }}
+          />
+        );
+      default:
+        return null;
+    }
+  };
 
   if (renderAsButtons) {
     const handleClick = (device: IDevice) => {
@@ -36,19 +96,7 @@ const DeviceSelector: FC<IDeviceSelectorProps> = ({
             {device.name}
           </button>
         ))}
-        {selectedDevice && (
-          <>
-            <RenderComponentForRoutine
-              device={selectedDevice}
-              onStateChange={(newState: any) =>
-                setSelectedDevice({
-                  ...selectedDevice,
-                  state: newState,
-                })
-              }
-            />
-          </>
-        )}
+        {selectedDevice && renderControl(selectedDevice)}
       </div>
     );
   } else {
@@ -74,19 +122,7 @@ const DeviceSelector: FC<IDeviceSelectorProps> = ({
             </option>
           ))}
         </select>
-        {selectedDevice && (
-          <>
-            <RenderComponentForRoutine
-              device={selectedDevice}
-              onStateChange={(newState: any) =>
-                setSelectedDevice({
-                  ...selectedDevice,
-                  state: newState,
-                })
-              }
-            />
-          </>
-        )}
+        {selectedDevice && renderControl ? renderControl(selectedDevice) : null}
       </>
     );
   }

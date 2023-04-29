@@ -1,5 +1,4 @@
 import React, { FC, useEffect, useState } from "react";
-import RenderComponentForRoutine from "../utils/RenderComponentForRoutine.utils";
 import { IDevice, IRoutine } from "../../contexts/DeviceContext";
 import "@trendmicro/react-datepicker/dist/react-datepicker.css";
 import "rc-time-picker/assets/index.css";
@@ -49,36 +48,30 @@ const CreateRoutineContainer: FC = () => {
     fetchAllDevices();
   }, []);
 
-  const handleDeviceStateChange = (
-    device: IDevice | null,
-    newState: Record<string, boolean | string>
-  ) => {
-    if (!device) {
-      return;
-    }
+  const handleDeviceStateChange = (updatedDevice: IDevice) => {
+    setSelectedDevice(updatedDevice);
 
     const updatedActions = [...newRoutineActions];
     const actionIndex = updatedActions.findIndex(
-      (action) => action.id === device.id
+      (action) => action.id === updatedDevice.id
     );
 
     if (actionIndex === -1) {
       updatedActions.push({
-        id: device.id,
-        type: device.type as
+        id: updatedDevice.id,
+        type: updatedDevice.type as
           | "toggle"
           | "openLock"
           | "fan"
           | "screen"
           | "buzzer",
-        state: newState,
+        state: { ...updatedDevice.state },
       });
     } else {
-      updatedActions[actionIndex].state = newState;
+      updatedActions[actionIndex].state = { ...updatedDevice.state };
     }
 
     setNewRoutineActions(updatedActions);
-    setSelectedDevice(device);
   };
 
   const handleWeekDayPickerChange = (updatedSelectedDays: Set<number>) => {
@@ -91,7 +84,14 @@ const CreateRoutineContainer: FC = () => {
 
   const updateInput = (inputValue: string) => {
     if (selectedDevice) {
-      handleDeviceStateChange(selectedDevice, { input: inputValue });
+      const updatedDevice = {
+        ...selectedDevice,
+        state: {
+          ...selectedDevice.state,
+          input: inputValue,
+        },
+      };
+      handleDeviceStateChange(updatedDevice);
     }
   };
 
@@ -108,11 +108,7 @@ const CreateRoutineContainer: FC = () => {
     const selectedHour = selectedTime.get("hour");
     const selectedMinute = selectedTime.get("minute");
 
-    const updatedActions = newRoutineActions.map((action) => ({
-      ...action,
-      deviceId: selectedDevice?.id as string,
-      delay: 0,
-    }));
+    const updatedActions = [...newRoutineActions];
 
     const daysOfWeek = Array.from(selectedDays).sort().join(",");
     const newRoutine: IRoutine = {
@@ -170,18 +166,10 @@ const CreateRoutineContainer: FC = () => {
       </div>
       <DeviceSelector
         devices={devices}
-        onDeviceSelected={(device) => handleDeviceStateChange(device, {})}
+        onDeviceSelected={handleDeviceStateChange}
         renderAsButtons={true}
       />
-      {selectedDevice && (
-        <RenderComponentForRoutine
-          device={selectedDevice}
-          onStateChange={(newState: any) =>
-            handleDeviceStateChange(selectedDevice, newState)
-          }
-          handleScreenInputChange={updateInput}
-        />
-      )}
+
       <WeekDayPicker
         selectedDays={selectedDays}
         onChange={(selectedDays) => handleWeekDayPickerChange(selectedDays)}

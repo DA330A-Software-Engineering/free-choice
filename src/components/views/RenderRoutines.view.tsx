@@ -43,7 +43,7 @@ const RenderRoutines: FC = () => {
     setEditingRoutine(routine);
   };
 
-  const onSaveRoutine = () => {
+  const handleEditingRoutine = () => {
     if (editingRoutine) {
       deviceContext.editRoutines(
         [editingRoutine],
@@ -70,6 +70,7 @@ const RenderRoutines: FC = () => {
 
   return (
     <>
+      <h1>My Routines:</h1>
       {routines.map((routine: IRoutine, index: number) => (
         <div key={index} className="routineStyle">
           {editingRoutine?.id === routine.id ? (
@@ -81,7 +82,7 @@ const RenderRoutines: FC = () => {
                 }
               />
               {/* Add inputs for other editable properties */}
-              <button onClick={onSaveRoutine}>Save</button>
+              <button onClick={handleEditingRoutine}>Save</button>
               <button onClick={onCancelEdit}>Cancel</button>
             </>
           ) : (
@@ -101,4 +102,3 @@ const RenderRoutines: FC = () => {
 };
 
 export default RenderRoutines;
-
