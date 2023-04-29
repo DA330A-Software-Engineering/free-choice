@@ -305,3 +305,28 @@ button:hover {
   color: white;
 }
 
+
+/* Add the following styles to your CSS file */
+.activeText {
+  color: green;
+  font-weight: bold;
+}
+
+.inactiveText {
+  color: red;
+}
+
+
+.routineStyle {
+  font-size: 10px;
+  margin-left: 20px;
+  font-family: 'Quicksand';
+  font-weight: bold;
+}
+
+.routineHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+

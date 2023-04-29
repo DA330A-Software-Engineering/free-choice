@@ -68,33 +68,47 @@ const RenderRoutines: FC = () => {
     setEditingRoutine(null);
   };
 
+  const onToggleEnabled = (routine: IRoutine) => {
+    const updatedRoutine = { ...routine, enabled: !routine.enabled };
+    deviceContext.editRoutines(
+      [updatedRoutine],
+      authContext.getToken() as string,
+      (success) => {
+        if (success) {
+          setRoutines(
+            routines.map((r) =>
+              r.id === updatedRoutine.id ? updatedRoutine : r
+            )
+          );
+        } else {
+          console.error("Error updating routine");
+        }
+      }
+    );
+  };
+
   return (
     <>
       <h1>My Routines:</h1>
       {routines.map((routine: IRoutine, index: number) => (
-        <div key={index} className="routineStyle">
-          {editingRoutine?.id === routine.id ? (
-            <>
-              <input
-                defaultValue={routine.name}
-                onChange={(e) =>
-                  setEditingRoutine({ ...editingRoutine, name: e.target.value }) //Scrapping the edit functionality.
-                }
-              />
-              {/* Add inputs for other editable properties */}
-              <button onClick={handleEditingRoutine}>Save</button>
-              <button onClick={onCancelEdit}>Cancel</button>
-            </>
-          ) : (
-            <>
-              <h1>{routine.name}</h1>
-              {/* Render other routine properties if necessary */}
-              <button onClick={() => onEditRoutine(routine)}>Edit</button>
-              <button onClick={() => onRemoveRoutine(routine.id)}>
-                Remove
-              </button>
-            </>
-          )}
+        <div
+          key={index}
+          className={`routineStyle${routine.enabled ? " enabledRoutine" : ""}`}
+        >
+          <div className="routineHeader">
+            <h1>{routine.name}</h1>
+            {/* Add a <span> tag to display the Active or Inactive text */}
+            <span className={routine.enabled ? "activeText" : "inactiveText"}>
+              {routine.enabled ? "Active" : "Inactive"}
+            </span>
+          </div>
+          {/* Render other routine properties if necessary */}
+          <button onClick={() => onEditRoutine(routine)}>Edit</button>
+          <button onClick={() => onRemoveRoutine(routine.id)}>Remove</button>
+          {/* Add a button to toggle the enabled property */}
+          <button onClick={() => onToggleEnabled(routine)}>
+            {routine.enabled ? "Disable" : "Enable"}
+          </button>
         </div>
       ))}
     </>
