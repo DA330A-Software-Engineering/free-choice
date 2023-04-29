@@ -8,12 +8,14 @@ interface OnScreenKeyboardProps {
   onInput: (input: string) => void;
   onBlur?: () => void;
   onFocus?: () => void;
+  inputValue: string;
 }
 
 const OnScreenKeyboard: FC<OnScreenKeyboardProps> = ({
   onInput,
   onBlur,
   onFocus,
+  inputValue,
 }) => {
   const [layoutName, setLayoutName] = useState("default");
 
@@ -37,6 +39,9 @@ const OnScreenKeyboard: FC<OnScreenKeyboardProps> = ({
       onKeyPress={handleKeyPress}
       onBlur={onBlur}
       onFocus={onFocus}
+      inputDisplay={{
+        inputString: inputValue,
+      }}
     />
   );
 };

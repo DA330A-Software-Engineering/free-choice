@@ -27,6 +27,10 @@ const CreateRoutineContainer: FC = () => {
   const [routineEnabled, setRoutineEnabled] = useState(true);
   const [routineRepeatable, setRoutineRepeatable] = useState(true);
   const [showKeyboard, setShowKeyboard] = useState(false);
+  const [focusedInput, setFocusedInput] = useState<
+    "routineName" | "routineDescription" | null
+  >(null);
+  const [inputString, setInputString] = useState("");
 
   const { getAllDevices } = useDeviceContext();
   const auth = useAuth();
@@ -83,7 +87,13 @@ const CreateRoutineContainer: FC = () => {
   };
 
   const updateInput = (inputValue: string) => {
-    if (selectedDevice) {
+    setInputString(inputValue);
+
+    if (focusedInput === "routineName") {
+      setRoutineName(inputValue);
+    } else if (focusedInput === "routineDescription") {
+      setRoutineDescription(inputValue);
+    } else if (selectedDevice) {
       const updatedDevice = {
         ...selectedDevice,
         state: {
@@ -152,7 +162,11 @@ const CreateRoutineContainer: FC = () => {
           placeholder="Routine Name"
           value={routineName}
           onChange={(value) => setRoutineName(value)}
-          onFocus={() => setShowKeyboard(true)}
+          onFocus={() => {
+            setFocusedInput("routineName");
+            setInputString(routineName);
+            setShowKeyboard(true);
+          }}
         />
       </div>
       <div>
@@ -161,7 +175,11 @@ const CreateRoutineContainer: FC = () => {
           placeholder="Routine Description"
           value={routineDescription}
           onChange={(value) => setRoutineDescription(value)}
-          onFocus={() => setShowKeyboard(true)}
+          onFocus={() => {
+            setFocusedInput("routineDescription");
+            setInputString(routineDescription);
+            setShowKeyboard(true);
+          }}
         />
       </div>
       <DeviceSelector
@@ -203,6 +221,7 @@ const CreateRoutineContainer: FC = () => {
       {showKeyboard && (
         <div>
           <OnScreenKeyboard
+            inputValue={inputString}
             onInput={updateInput}
             onBlur={() => setShowKeyboard(false)}
           />
