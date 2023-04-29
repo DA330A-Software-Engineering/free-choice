@@ -78,7 +78,7 @@ const RenderRoutines: FC = () => {
               <input
                 defaultValue={routine.name}
                 onChange={(e) =>
-                  setEditingRoutine({ ...editingRoutine, name: e.target.value })
+                  setEditingRoutine({ ...editingRoutine, name: e.target.value }) //Scrapping the edit functionality.
                 }
               />
               {/* Add inputs for other editable properties */}
