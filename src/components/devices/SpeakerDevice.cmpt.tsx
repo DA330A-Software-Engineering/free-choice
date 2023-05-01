@@ -59,7 +59,6 @@ const SpeakerDevice: FC<SpeakerDeviceProps> = ({ device, playIcon, noTuneSelecte
 					<option value="">Select a tune...</option>
 					<option value="alarm">Alarm</option>
 					<option value="pirate">Pirates of the Caribbean</option>
-					<option value="pokemon">Pokemon Theme</option>
 				</select>
 				<Button
 					disabled={!selectedTune}

@@ -25,9 +25,6 @@ const BuzzerControl: React.FC<BuzzerControlProps> = ({
           <option key="pirate" value="pirate">
             Pirates of the Caribbean
           </option>
-          <option key="pokemon" value="pokemon">
-            Pokemon Theme
-          </option>
         </select>
       </label>
     </div>
