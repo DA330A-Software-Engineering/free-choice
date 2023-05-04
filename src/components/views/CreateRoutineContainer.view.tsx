@@ -10,7 +10,6 @@ import { QueryDocumentSnapshot, QuerySnapshot } from "firebase/firestore";
 import { useDeviceContext } from "../../contexts/DeviceContext";
 import OnScreenKeyboard from "../utils/OnScreenKeyBoard.util";
 import Input from "../interactable/Input.cmpt";
-import RenderRoutines from "./RenderRoutines.view";
 import { Routine } from "../utils/types/Routine.utils";
 import { useAuth } from "../../contexts/AuthContext";
 
@@ -225,7 +224,6 @@ const CreateRoutineContainer: FC = () => {
             onInput={updateInput}
             onBlur={() => setShowKeyboard(false)}
           />
-          <RenderRoutines />
         </div>
       )}
     </div>
