@@ -17,7 +17,7 @@ const DeviceSelector: FC<IDeviceSelectorProps> = ({
   renderAsButtons = false,
 }) => {
   const [selectedDevice, setSelectedDevice] = useState<IDevice | null>(null);
-
+  const filteredDevices = devices.filter((device) => device.type !== "sensor");
   const renderControl = (device: IDevice) => {
     switch (device.type) {
       case "buzzer":
@@ -83,7 +83,7 @@ const DeviceSelector: FC<IDeviceSelectorProps> = ({
 
     return (
       <div className="device-selector">
-        {devices.map((device) => (
+        {filteredDevices.map((device) => (
           <button
             key={device.id}
             className={`device-button${
