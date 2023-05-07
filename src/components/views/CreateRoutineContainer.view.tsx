@@ -29,9 +29,6 @@ const CreateRoutineContainer: FC = () => {
   const [focusedInput, setFocusedInput] = useState<
     "routineName" | "routineDescription" | null
   >(null);
-  const [inputString, setInputString] = useState("");
-  const [routineNameInput, setRoutineNameInput] = useState("");
-  const [routineDescriptionInput, setRoutineDescriptionInput] = useState("");
 
   const { getAllDevices } = useDeviceContext();
   const auth = useAuth();
@@ -153,7 +150,7 @@ const CreateRoutineContainer: FC = () => {
         onChange={(value) => setRoutineName(value)}
         onFocus={() => {
           setFocusedInput("routineName");
-          setRoutineNameInput(routineName);
+          setRoutineName(routineName);
           setShowKeyboard(true);
         }}
       />
@@ -164,7 +161,7 @@ const CreateRoutineContainer: FC = () => {
         onChange={(value) => setRoutineDescription(value)}
         onFocus={() => {
           setFocusedInput("routineDescription");
-          setRoutineDescriptionInput(routineDescription);
+          setRoutineDescription(routineDescription);
           setShowKeyboard(true);
         }}
       />
@@ -207,6 +204,7 @@ const CreateRoutineContainer: FC = () => {
       {showKeyboard && (
         <div>
           <OnScreenKeyboard
+            key={focusedInput}
             inputValue={
               focusedInput === "routineName"
                 ? routineName
