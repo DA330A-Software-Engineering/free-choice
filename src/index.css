@@ -232,9 +232,9 @@ button:hover {
 }
 
 .routine-input {
-  width: 100%;
+  width: 50%;
   padding: 10px;
-  font-size: 1rem;
+  font-size: 2rem;
   border: 1px solid #ccc;
   border-radius: 5px;
 }
@@ -326,7 +326,17 @@ button:hover {
 
 .routineHeader {
   display: flex;
+  flex-direction: column;
+  align-items: flex-start;
   justify-content: space-between;
   align-items: center;
 }
+
+.nameAndStatus {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
 

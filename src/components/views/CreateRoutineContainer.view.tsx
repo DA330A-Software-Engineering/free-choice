@@ -30,6 +30,8 @@ const CreateRoutineContainer: FC = () => {
     "routineName" | "routineDescription" | null
   >(null);
   const [inputString, setInputString] = useState("");
+  const [routineNameInput, setRoutineNameInput] = useState("");
+  const [routineDescriptionInput, setRoutineDescriptionInput] = useState("");
 
   const { getAllDevices } = useDeviceContext();
   const auth = useAuth();
@@ -86,21 +88,10 @@ const CreateRoutineContainer: FC = () => {
   };
 
   const updateInput = (inputValue: string) => {
-    setInputString(inputValue);
-
     if (focusedInput === "routineName") {
       setRoutineName(inputValue);
     } else if (focusedInput === "routineDescription") {
       setRoutineDescription(inputValue);
-    } else if (selectedDevice) {
-      const updatedDevice = {
-        ...selectedDevice,
-        state: {
-          ...selectedDevice.state,
-          input: inputValue,
-        },
-      };
-      handleDeviceStateChange(updatedDevice);
     }
   };
 
@@ -155,32 +146,28 @@ const CreateRoutineContainer: FC = () => {
 
   return (
     <div className="routine-container">
-      <div>
-        <Input
-          className="routine-input"
-          placeholder="Routine Name"
-          value={routineName}
-          onChange={(value) => setRoutineName(value)}
-          onFocus={() => {
-            setFocusedInput("routineName");
-            setInputString(routineName);
-            setShowKeyboard(true);
-          }}
-        />
-      </div>
-      <div>
-        <Input
-          className="routine-input"
-          placeholder="Routine Description"
-          value={routineDescription}
-          onChange={(value) => setRoutineDescription(value)}
-          onFocus={() => {
-            setFocusedInput("routineDescription");
-            setInputString(routineDescription);
-            setShowKeyboard(true);
-          }}
-        />
-      </div>
+      <Input
+        className="routine-input"
+        placeholder="Routine Name"
+        value={routineName}
+        onChange={(value) => setRoutineName(value)}
+        onFocus={() => {
+          setFocusedInput("routineName");
+          setRoutineNameInput(routineName);
+          setShowKeyboard(true);
+        }}
+      />
+      <Input
+        className="routine-input"
+        placeholder="Routine Description"
+        value={routineDescription}
+        onChange={(value) => setRoutineDescription(value)}
+        onFocus={() => {
+          setFocusedInput("routineDescription");
+          setRoutineDescriptionInput(routineDescription);
+          setShowKeyboard(true);
+        }}
+      />
       <DeviceSelector
         devices={devices}
         onDeviceSelected={handleDeviceStateChange}
@@ -220,7 +207,13 @@ const CreateRoutineContainer: FC = () => {
       {showKeyboard && (
         <div>
           <OnScreenKeyboard
-            inputValue={inputString}
+            inputValue={
+              focusedInput === "routineName"
+                ? routineName
+                : focusedInput === "routineDescription"
+                ? routineDescription
+                : ""
+            }
             onInput={updateInput}
             onBlur={() => setShowKeyboard(false)}
           />

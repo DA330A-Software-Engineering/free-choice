@@ -18,6 +18,7 @@ const OnScreenKeyboard: FC<OnScreenKeyboardProps> = ({
   inputValue,
 }) => {
   const [layoutName, setLayoutName] = useState("default");
+  const [currentInput, setCurrentInput] = useState(inputValue);
 
   const handleShift = () => {
     setLayoutName(layoutName === "default" ? "shift" : "default");
@@ -27,15 +28,25 @@ const OnScreenKeyboard: FC<OnScreenKeyboardProps> = ({
     (button: string) => {
       if (button === "{shift}" || button === "{lock}") {
         handleShift();
+      } else if (button === "{bksp}") {
+        setCurrentInput(currentInput.slice(0, -1));
+        onInput(currentInput.slice(0, -1));
+      } else if (button === "{space}") {
+        setCurrentInput(currentInput + " ");
+        onInput(currentInput + " ");
+      } else if (button === "{enter}") {
+        // handle enter key press if needed
+      } else if (button.length === 1) {
+        setCurrentInput(currentInput + button);
+        onInput(currentInput + button);
       }
     },
-    [layoutName]
+    [layoutName, currentInput, onInput]
   );
 
   return (
     <SimpleKeyboard
       layoutName={layoutName}
-      onChange={onInput}
       onKeyPress={handleKeyPress}
       onBlur={onBlur}
       onFocus={onFocus}

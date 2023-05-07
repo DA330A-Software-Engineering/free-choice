@@ -96,11 +96,18 @@ const RenderRoutines: FC = () => {
           className={`routineStyle${routine.enabled ? " enabledRoutine" : ""}`}
         >
           <div className="routineHeader">
-            <h1>{routine.name}</h1>
-            {/* Add a <span> tag to display the Active or Inactive text */}
-            <span className={routine.enabled ? "activeText" : "inactiveText"}>
-              {routine.enabled ? "Active" : "Inactive"}
-            </span>
+            <div className="nameAndStatus">
+              <h1>{routine.name}</h1>
+              {/* Add a <span> tag to display the Active or Inactive text */}
+              <span className={routine.enabled ? "activeText" : "inactiveText"}>
+                {routine.enabled ? "Active" : "Inactive"}
+              </span>
+            </div>
+            <div>
+              <p>
+                <i>{routine.description}</i>
+              </p>
+            </div>
           </div>
           {/* Render other routine properties if necessary */}
           <button onClick={() => onEditRoutine(routine)}>Edit</button>
