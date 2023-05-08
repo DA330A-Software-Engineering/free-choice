@@ -10,6 +10,10 @@ const RenderRoutines: FC = () => {
   const deviceContext = useDeviceContext();
   const authContext = useAuth();
 
+  // Pagination states and constants
+  const [currentPage, setCurrentPage] = useState(0);
+  const routinesPerPage = 4;
+
   useEffect(() => {
     deviceContext.getAllRoutines((querySnapshot) => {
       const fetchedRoutines: IRoutine[] = [];
@@ -87,37 +91,71 @@ const RenderRoutines: FC = () => {
     );
   };
 
+  // Pagination handler
+  const handlePageChange = (direction: "next" | "prev") => {
+    if (direction === "next") {
+      setCurrentPage(currentPage + 1);
+    } else {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
   return (
     <>
       <h1>My Routines:</h1>
-      {routines.map((routine: IRoutine, index: number) => (
-        <div
-          key={index}
-          className={`routineStyle${routine.enabled ? " enabledRoutine" : ""}`}
+      <div className="routine-grid">
+        {routines
+          .slice(
+            currentPage * routinesPerPage,
+            (currentPage + 1) * routinesPerPage
+          )
+          .map((routine: IRoutine, index: number) => (
+            <div
+              key={index}
+              className={`routineStyle${
+                routine.enabled ? " enabledRoutine" : ""
+              }`}
+            >
+              <div className="routineHeader">
+                <div className="nameAndStatus">
+                  <h1>{routine.name}</h1>
+                  <span
+                    className={routine.enabled ? "activeText" : "inactiveText"}
+                  >
+                    {routine.enabled ? "Active" : "Inactive"}
+                  </span>
+                </div>
+                <div>
+                  <p>
+                    <i>{routine.description}</i>
+                  </p>
+                </div>
+              </div>
+              <button onClick={() => onEditRoutine(routine)}>Edit</button>
+              <button onClick={() => onRemoveRoutine(routine.id)}>
+                Remove
+              </button>
+              <button onClick={() => onToggleEnabled(routine)}>
+                {routine.enabled ? "Disable" : "Enable"}
+              </button>
+            </div>
+          ))}
+      </div>
+      <div className="pagination">
+        <button
+          disabled={currentPage === 0}
+          onClick={() => handlePageChange("prev")}
         >
-          <div className="routineHeader">
-            <div className="nameAndStatus">
-              <h1>{routine.name}</h1>
-              {/* Add a <span> tag to display the Active or Inactive text */}
-              <span className={routine.enabled ? "activeText" : "inactiveText"}>
-                {routine.enabled ? "Active" : "Inactive"}
-              </span>
-            </div>
-            <div>
-              <p>
-                <i>{routine.description}</i>
-              </p>
-            </div>
-          </div>
-          {/* Render other routine properties if necessary */}
-          <button onClick={() => onEditRoutine(routine)}>Edit</button>
-          <button onClick={() => onRemoveRoutine(routine.id)}>Remove</button>
-          {/* Add a button to toggle the enabled property */}
-          <button onClick={() => onToggleEnabled(routine)}>
-            {routine.enabled ? "Disable" : "Enable"}
-          </button>
-        </div>
-      ))}
+          Prev
+        </button>
+        <span>Page {currentPage + 1}</span>
+        <button
+          disabled={(currentPage + 1) * routinesPerPage >= routines.length}
+          onClick={() => handlePageChange("next")}
+        >
+          Next
+        </button>
+      </div>
     </>
   );
 };
