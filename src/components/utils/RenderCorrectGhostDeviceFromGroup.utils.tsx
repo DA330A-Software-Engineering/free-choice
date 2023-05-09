@@ -19,7 +19,7 @@ const RenderCorrectGhostDeviceFromGroup: FC<{group: IGroup}> = ({group}) => {
         id: "",
         state: {},
         type: (group.devices[0] as IDevice).type,
-        name: "The Group",
+        name: "",
         tag: ""
     }
 
