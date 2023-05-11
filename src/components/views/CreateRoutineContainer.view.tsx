@@ -72,10 +72,31 @@ const CreateRoutineContainer: FC<CreateRoutineContainerProps> = ({
       setRoutineDescription(editingRoutine.description);
       setRoutineEnabled(editingRoutine.enabled);
       setRoutineRepeatable(editingRoutine.repeatable);
+
+      // Set selected device state
+      if (editingRoutine.actions.length > 0) {
+        const selectedDeviceId = editingRoutine.actions[0].id;
+        const selectedDevice = devices.find(
+          (device) => device.id === selectedDeviceId
+        );
+        setSelectedDevice(selectedDevice || null);
+      }
     } else {
       resetForm();
     }
-  }, [editingRoutine]);
+  }, [editingRoutine, devices]);
+  useEffect(() => {
+    if (editingRoutine && devices.length > 0) {
+      // Set selected device state
+      if (editingRoutine.actions.length > 0) {
+        const selectedDeviceId = editingRoutine.actions[0].id;
+        const selectedDevice = devices.find(
+          (device) => device.id === selectedDeviceId
+        );
+        setSelectedDevice(selectedDevice || null);
+      }
+    }
+  }, [editingRoutine, devices]);
 
   const handleDeviceStateChange = (updatedDevice: IDevice) => {
     setSelectedDevice(updatedDevice);
@@ -219,6 +240,7 @@ const CreateRoutineContainer: FC<CreateRoutineContainerProps> = ({
       />
       <DeviceSelector
         devices={devices}
+        selectedDevice={selectedDevice}
         onDeviceSelected={handleDeviceStateChange}
         renderAsButtons={true}
       />

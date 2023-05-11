@@ -1,4 +1,4 @@
-import React, { FC, useState } from "react";
+import React, { FC, useState, useEffect } from "react";
 import { IDevice } from "../../contexts/DeviceContext";
 import BuzzerControl from "../interactable/DeviceControls/BuzzerControl.cmpt";
 import FanControl from "../interactable/DeviceControls/FanControl.cmpt";
@@ -7,17 +7,26 @@ import ScreenControl from "../interactable/DeviceControls/ScreenControl.cmpt";
 import ToggleControl from "../interactable/DeviceControls/ToggleControl.cmpt";
 interface IDeviceSelectorProps {
   devices: IDevice[];
+  selectedDevice: IDevice | null;
   onDeviceSelected: (selectedDevice: IDevice) => void;
   renderAsButtons?: boolean;
 }
 
 const DeviceSelector: FC<IDeviceSelectorProps> = ({
   devices,
+  selectedDevice: selectedDeviceProp,
   onDeviceSelected,
   renderAsButtons = false,
 }) => {
   const [selectedDevice, setSelectedDevice] = useState<IDevice | null>(null);
   const filteredDevices = devices.filter((device) => device.type !== "sensor");
+
+  useEffect(() => {
+    if (selectedDeviceProp) {
+      setSelectedDevice(selectedDeviceProp);
+    }
+  }, [selectedDeviceProp]);
+
   const renderControl = (device: IDevice) => {
     switch (device.type) {
       case "buzzer":
