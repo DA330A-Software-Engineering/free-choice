@@ -1,14 +1,22 @@
 // CustomTimePicker.tsx
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import moment from "moment";
 
 interface ICustomTimePickerProps {
   onChange: (time: moment.Moment) => void;
+  initialTime?: moment.Moment;
 }
 
-const CustomTimePicker: React.FC<ICustomTimePickerProps> = ({ onChange }) => {
-  const [time, setTime] = useState<moment.Moment>(moment());
+const CustomTimePicker: React.FC<ICustomTimePickerProps> = ({ onChange, initialTime }) => {
+  const [time, setTime] = useState<moment.Moment>(initialTime || moment());
+
+  useEffect(() => {
+    if (initialTime) {
+      setTime(initialTime);
+    }
+  }, [initialTime]);
+
 
   const increaseHour = () => {
     setTime(time.clone().add(1, "hour"));

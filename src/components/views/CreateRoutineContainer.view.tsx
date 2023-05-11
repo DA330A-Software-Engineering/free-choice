@@ -13,8 +13,18 @@ import Input from "../interactable/Input.cmpt";
 import { Routine } from "../utils/types/Routine.utils";
 import { useAuth } from "../../contexts/AuthContext";
 
-const CreateRoutineContainer: FC = () => {
-  const [selectedTime, setSelectedTime] = useState<moment.Moment | null>(null);
+interface CreateRoutineContainerProps {
+  editingRoutine: IRoutine | null;
+  setEditingRoutine: (routine: IRoutine | null) => void;
+}
+
+const CreateRoutineContainer: FC<CreateRoutineContainerProps> = ({
+  editingRoutine,
+  setEditingRoutine,
+}) => {
+  const [selectedTime, setSelectedTime] = useState<moment.Moment | undefined>(
+    undefined
+  );
   const [devices, setDevices] = useState<IDevice[]>([]);
   const [selectedDays, setSelectedDays] = useState<Set<number>>(new Set());
   const [selectedDevice, setSelectedDevice] = useState<IDevice | null>(null);
@@ -49,6 +59,23 @@ const CreateRoutineContainer: FC = () => {
   useEffect(() => {
     fetchAllDevices();
   }, []);
+
+  useEffect(() => {
+    if (editingRoutine) {
+      // Populate form fields with the data from editingRoutine
+      setSelectedTime(moment(editingRoutine.schedule, "0 m H * * d"));
+      setSelectedDays(
+        new Set(editingRoutine.schedule.split(" ")[5].split(",").map(Number))
+      );
+      setRoutineName(editingRoutine.name);
+      setNewRoutineActions(editingRoutine.actions);
+      setRoutineDescription(editingRoutine.description);
+      setRoutineEnabled(editingRoutine.enabled);
+      setRoutineRepeatable(editingRoutine.repeatable);
+    } else {
+      resetForm();
+    }
+  }, [editingRoutine]);
 
   const handleDeviceStateChange = (updatedDevice: IDevice) => {
     setSelectedDevice(updatedDevice);
@@ -92,8 +119,8 @@ const CreateRoutineContainer: FC = () => {
     }
   };
 
-  const handleCreateRoutine = async () => {
-    console.log("Creating routine...");
+  const handleCreateOrUpdateRoutine = async () => {
+    console.log(editingRoutine ? "Updating routine..." : "Creating routine...");
     console.log("selectedTime:", selectedTime);
     console.log("selectedDays:", selectedDays);
     console.log("selectedDevice:", selectedDevice);
@@ -118,11 +145,36 @@ const CreateRoutineContainer: FC = () => {
     };
 
     try {
-      console.log("Calling createRoutine function...");
-      await deviceContext.createRoutine(newRoutine, auth.getToken() as string);
-      console.log("Routine created successfully!");
+      console.log(
+        editingRoutine
+          ? "Calling updateRoutine function..."
+          : "Calling createRoutine function..."
+      );
+      if (editingRoutine) {
+        await deviceContext.updateRoutine(
+          { ...newRoutine, id: editingRoutine.id },
+          auth.getToken() as string,
+          (success: boolean) => {
+            if (success) {
+              console.log("Routine updated successfully!");
+              setEditingRoutine(null);
+            } else {
+              console.log("Error updating routine.");
+            }
+          }
+        );
+      } else {
+        await deviceContext.createRoutine(
+          newRoutine,
+          auth.getToken() as string
+        );
+        console.log("Routine created successfully!");
+      }
     } catch (error) {
-      console.error("Error creating routine:", error);
+      console.error(
+        editingRoutine ? "Error updating routine:" : "Error creating routine:",
+        error
+      );
       return;
     }
 
@@ -130,7 +182,7 @@ const CreateRoutineContainer: FC = () => {
   };
 
   const resetForm = () => {
-    setSelectedTime(null);
+    setSelectedTime(undefined);
     setSelectedDays(new Set());
     setSelectedDevice(null);
     setRoutineName("");
@@ -176,7 +228,10 @@ const CreateRoutineContainer: FC = () => {
         onChange={(selectedDays) => handleWeekDayPickerChange(selectedDays)}
       />
       {selectedDays.size > 0 && (
-        <CustomTimePicker onChange={handleTimeChange} />
+        <CustomTimePicker
+          initialTime={selectedTime}
+          onChange={handleTimeChange}
+        />
       )}
       <div>
         <label>
@@ -197,8 +252,11 @@ const CreateRoutineContainer: FC = () => {
         </label>
       </div>
       <div>
-        <button className="routine-create-btn" onClick={handleCreateRoutine}>
-          Create Routine
+        <button
+          className="routine-create-btn"
+          onClick={handleCreateOrUpdateRoutine}
+        >
+          {editingRoutine ? "Update Routine" : "Create Routine"}
         </button>
       </div>
       {showKeyboard && (

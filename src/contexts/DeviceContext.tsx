@@ -56,7 +56,8 @@ export interface IAction {
   type: string; // The type of the device, e.g. "toggle", "openLock", "fan", "screen", "buzzer"
 }
 
-/** Interface for the DeviceContext */ export interface IDeviceContext {
+/** Interface for the DeviceContext */
+export interface IDeviceContext {
   startListening: (
     deviceId: string,
     onUpdate: { (data: IDevice | null): void }
@@ -76,10 +77,10 @@ export interface IAction {
     email: string,
     onGetDocuments: { (value: QuerySnapshot): void }
   ) => void;
-  editRoutines: (
-    routines: IRoutine[],
+  updateRoutine: (
+    routine: IRoutine,
     token: string,
-    onEdit: { (value: boolean): void }
+    callback: (success: boolean) => void
   ) => void;
 }
 
@@ -128,11 +129,7 @@ const DeviceContext = createContext<IDeviceContext>({
   ): void {
     throw new Error("Function not implemented.");
   },
-  editRoutines: function (
-    _routines: IRoutine[],
-    _token: string,
-    _onEdit: (value: boolean) => void
-  ): void {
+  updateRoutine: function (_routine: IRoutine, _token: string): void {
     throw new Error("Function not implemented.");
   },
 });
@@ -268,23 +265,32 @@ export const DeviceContextProvider: FC<{ children: React.ReactElement }> = ({
     });
   };
 
-  const editRoutines = (
-    routines: IRoutine[],
+  const updateRoutine = (
+    routine: IRoutine,
     token: string,
-    onEdit: (value: boolean) => void
+    callback: (success: boolean) => void
   ) => {
-    console.log("Sending to server: " + JSON.stringify(routines));
-    fetch(API_ENDPOINT_ROUTINES, {
+    console.log("Sending to server: " + JSON.stringify(routine));
+    fetch(API_ENDPOINT_ROUTINES + "/" + routine.id, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
         "x-auth-header": token,
       },
-      body: JSON.stringify(routines),
-    }).then((res: Response) => {
-      console.log(res);
-      onEdit(res.ok);
-    });
+      body: JSON.stringify(routine),
+    })
+      .then((res: Response) => {
+        console.log(res);
+        if (res.ok) {
+          callback(true);
+        } else {
+          callback(false);
+        }
+      })
+      .catch((error: any) => {
+        console.error("Error:", error);
+        callback(false);
+      });
   };
 
   // Returning the context
@@ -302,7 +308,7 @@ export const DeviceContextProvider: FC<{ children: React.ReactElement }> = ({
         removeRoutineById,
         getAllRoutines,
         getRoutinesFromEmail,
-        editRoutines,
+        updateRoutine,
       }}
     >
       {children}

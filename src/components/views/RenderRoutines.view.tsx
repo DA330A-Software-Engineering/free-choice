@@ -4,9 +4,16 @@ import { useDeviceContext } from "../../contexts/DeviceContext";
 import { useAuth } from "../../contexts/AuthContext";
 import { QueryDocumentSnapshot, QuerySnapshot } from "firebase/firestore";
 
-const RenderRoutines: FC = () => {
+type RenderRoutinesProps = {
+  editingRoutine: IRoutine | null;
+  setEditingRoutine: (routine: IRoutine | null) => void;
+};
+
+const RenderRoutines: FC<RenderRoutinesProps> = ({
+  editingRoutine,
+  setEditingRoutine,
+}) => {
   const [routines, setRoutines] = useState<IRoutine[]>([]);
-  const [editingRoutine, setEditingRoutine] = useState<IRoutine | null>(null);
   const deviceContext = useDeviceContext();
   const authContext = useAuth();
 
@@ -47,49 +54,51 @@ const RenderRoutines: FC = () => {
     setEditingRoutine(routine);
   };
 
-  const handleEditingRoutine = () => {
-    if (editingRoutine) {
-      deviceContext.editRoutines(
-        [editingRoutine],
-        authContext.getToken() as string,
-        (success) => {
-          if (success) {
-            setRoutines(
-              routines.map((routine) =>
-                routine.id === editingRoutine?.id ? editingRoutine : routine
-              )
-            );
-            setEditingRoutine(null);
-          } else {
-            console.error("Error updating routine");
-          }
-        }
-      );
-    }
-  };
-
-  const onCancelEdit = () => {
-    setEditingRoutine(null);
-  };
-
-  const onToggleEnabled = (routine: IRoutine) => {
-    const updatedRoutine = { ...routine, enabled: !routine.enabled };
-    deviceContext.editRoutines(
-      [updatedRoutine],
+const handleEditingRoutine = () => {
+  if (editingRoutine) {
+    deviceContext.updateRoutine(
+      // Change this line
+      editingRoutine,
       authContext.getToken() as string,
       (success) => {
         if (success) {
           setRoutines(
-            routines.map((r) =>
-              r.id === updatedRoutine.id ? updatedRoutine : r
+            routines.map((routine) =>
+              routine.id === editingRoutine?.id ? editingRoutine : routine
             )
           );
+          setEditingRoutine(null);
         } else {
           console.error("Error updating routine");
         }
       }
     );
+  }
+};
+
+
+  const onCancelEdit = () => {
+    setEditingRoutine(null);
   };
+
+const onToggleEnabled = (routine: IRoutine) => {
+  const updatedRoutine = { ...routine, enabled: !routine.enabled };
+  deviceContext.updateRoutine(
+    // Change this line
+    updatedRoutine,
+    authContext.getToken() as string,
+    (success) => {
+      if (success) {
+        setRoutines(
+          routines.map((r) => (r.id === updatedRoutine.id ? updatedRoutine : r))
+        );
+      } else {
+        console.error("Error updating routine");
+      }
+    }
+  );
+};
+
 
   // Pagination handler
   const handlePageChange = (direction: "next" | "prev") => {
