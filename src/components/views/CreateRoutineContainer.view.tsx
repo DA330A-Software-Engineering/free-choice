@@ -145,6 +145,7 @@ const CreateRoutineContainer: FC<CreateRoutineContainerProps> = ({
     console.log("selectedTime:", selectedTime);
     console.log("selectedDays:", selectedDays);
     console.log("selectedDevice:", selectedDevice);
+
     if (!selectedTime || selectedDays.size === 0 || !selectedDevice) {
       console.log("Missing required fields");
       return;
@@ -178,7 +179,7 @@ const CreateRoutineContainer: FC<CreateRoutineContainerProps> = ({
           (success: boolean) => {
             if (success) {
               console.log("Routine updated successfully!");
-              setEditingRoutine(null);
+              setEditingRoutine({ ...newRoutine, id: editingRoutine.id });
             } else {
               console.log("Error updating routine.");
             }
