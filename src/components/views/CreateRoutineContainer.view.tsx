@@ -12,6 +12,8 @@ import OnScreenKeyboard from "../utils/OnScreenKeyBoard.util";
 import Input from "../interactable/Input.cmpt";
 import { Routine } from "../utils/types/Routine.utils";
 import { useAuth } from "../../contexts/AuthContext";
+import { faMinus } from "@fortawesome/free-solid-svg-icons";
+import Button from "../interactable/Button.cmpt";
 
 interface CreateRoutineContainerProps {
   editingRoutine: IRoutine | null;
@@ -283,7 +285,12 @@ const CreateRoutineContainer: FC<CreateRoutineContainerProps> = ({
         </button>
       </div>
       {showKeyboard && (
-        <div>
+        <div className="keyboard-container">
+          <Button
+            onClick={() => setShowKeyboard(false)}
+            className="keyboardButton"
+            icon={faMinus}
+          />
           <OnScreenKeyboard
             key={focusedInput}
             inputValue={

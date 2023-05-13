@@ -102,40 +102,37 @@ const RenderRoutines: FC<RenderRoutinesProps> = ({
     }
   };
 
-  return (
-    <>
-      <h1>My Routines:</h1>
-      <div className="routine-grid">
-        {routines
-          .slice(
-            currentPage * routinesPerPage,
-            (currentPage + 1) * routinesPerPage
-          )
-          .map((routine: IRoutine, index: number) => {
-            return (
-              <div
-                key={index}
-                className={`routineStyle${
-                  routine.enabled ? " enabledRoutine" : ""
-                }`}
-              >
-                <div className="routineHeader">
-                  <div className="nameAndStatus">
-                    <h1>{routine.name}</h1>
-                    <span
-                      className={
-                        routine.enabled ? "activeText" : "inactiveText"
-                      }
-                    >
-                      {routine.enabled ? "Active" : "Inactive"}
-                    </span>
-                  </div>
-                  <div>
-                    <i>{routine.description}</i>
-                  </div>
+return (
+  <>
+    <h2>My Routines:</h2>
+    <div className="routine-grid">
+      {routines
+        .slice(
+          currentPage * routinesPerPage,
+          (currentPage + 1) * routinesPerPage
+        )
+        .map((routine: IRoutine, index: number) => {
+          return (
+            <div
+              key={index}
+              className={`routineStyle${
+                routine.enabled ? " enabledRoutine" : ""
+              }`}
+            >
+              <div className="routineHeader">
+                <div className="nameAndStatus">
+                  <h1>{routine.name}</h1>
+                  <span
+                    className={routine.enabled ? "activeText" : "inactiveText"}
+                  >
+                    {routine.enabled ? "Active" : "Inactive"}
+                  </span>
                 </div>
-                <p>Time: {parseSchedule(routine.schedule).time}</p>
-                <p>Day(s): {parseSchedule(routine.schedule).days.join(", ")}</p>
+              </div>
+              <p>Description: {routine.description}</p>
+              <p>Time: {parseSchedule(routine.schedule).time}</p>
+              <p>Day(s): {parseSchedule(routine.schedule).days.join(", ")}</p>
+              <div className="buttonContainer">
                 <button onClick={() => onEditRoutine(routine)}>Edit</button>
                 <button onClick={() => onRemoveRoutine(routine.id)}>
                   Remove
@@ -144,26 +141,28 @@ const RenderRoutines: FC<RenderRoutinesProps> = ({
                   {routine.enabled ? "Disable" : "Enable"}
                 </button>
               </div>
-            );
-          })}
-      </div>
-      <div className="pagination">
-        <button
-          disabled={currentPage === 0}
-          onClick={() => handlePageChange("prev")}
-        >
-          Prev
-        </button>
-        <span>Page {currentPage + 1}</span>
-        <button
-          disabled={(currentPage + 1) * routinesPerPage >= routines.length}
-          onClick={() => handlePageChange("next")}
-        >
-          Next
-        </button>
-      </div>
-    </>
-  );
+            </div>
+          );
+        })}
+    </div>
+    <div className="pagination">
+      <button
+        disabled={currentPage === 0}
+        onClick={() => handlePageChange("prev")}
+      >
+        Prev
+      </button>
+      <span>Page {currentPage + 1}</span>
+      <button
+        disabled={(currentPage + 1) * routinesPerPage >= routines.length}
+        onClick={() => handlePageChange("next")}
+      >
+        Next
+      </button>
+    </div>
+  </>
+);
+
 };
 
 export default RenderRoutines;
