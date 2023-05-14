@@ -64,8 +64,8 @@ const CreateGroupContainer: FC<CreateGroupContainerProps> = () => {
         }
 
         const color = () => {
-            if (active) return 'blue'
-            else return 'grey'
+            if (active) return 'darkGrey'
+            else return 'lightGrey'
         }
 
         return (
@@ -96,7 +96,7 @@ const CreateGroupContainer: FC<CreateGroupContainerProps> = () => {
     };
 
     return (
-    <div>
+    <div className='createGroupWrapper'>
         <div className='deviceContainerStyle'>
             <Input placeholder={'Group Name...'} onChange={(name: string) => setGroupName(name)} />
             <textarea value={groupDescription} onChange={handleTextareaChange} placeholder='Group Description...'></textarea>

@@ -65,6 +65,12 @@ button:hover {
   margin-right: 12px;
 }
 
+.deviceInGroupWrapper {
+  width: 0;
+  height: 0;
+  transform: scale(0);
+}
+
 .loadingStyle {
   display: flex;
   justify-content: center;
@@ -91,6 +97,7 @@ button:hover {
   flex-shrink: 0;
   max-width: 200px;
   height: 100px;
+  margin-left: 0;
 }
 
 .deviceStyle select {
@@ -122,6 +129,11 @@ button:hover {
   margin-right: 20%;
   gap: 10px;
   padding-top: 3%;
+  border: solid 2px rgb(228, 228, 228);
+  border-radius: 5px;
+  padding: 30px;
+  padding: 20px;
+  margin-top: 20px;
 }
 
 .deviceGroupStyle {
@@ -198,4 +210,97 @@ button:hover {
   background-color: #ccc;
 }
 
+.grouplayout{
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
 
+.groupElement > h1 {
+  font-size: 20px;
+  margin: 0;
+}
+
+.groupElement > p {
+  margin: 0;
+  font-size: 12px;
+  width: 200px;
+  overflow: hidden;
+  word-wrap: break-word;
+}
+
+.groupElement > button {
+  width: 100%;
+  border: none;
+  border-radius: 5px;
+  margin: 0;
+  color: rgb(211, 69, 69);
+  font-weight: bold;
+  padding: 20px;
+}
+
+.groupElement > * {
+  padding-bottom: 5px;
+}
+
+.deviceInGroup{
+  font-size: 15px;
+  font-weight: bold;
+  text-align: left;
+  margin-bottom: 20px;
+}
+
+input, textarea {
+  width: 200px;
+  resize: none;
+  text-align: left;
+}
+
+.deviceContainerStyle > button {
+  border: none;
+  border-radius: 5px;
+  margin: 0;
+  font-weight: bold;
+  padding: 20px;
+}
+
+.authWrapper {
+  text-align: center;
+}
+
+.authWrapper > form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-top: 50px;
+}
+
+.authWrapper > h1 {
+  margin-bottom: 70px;
+}
+
+.authInput {
+  width: 560px;
+  height: 50px;
+  border-radius: 5px;
+  background-color: rgb(236, 236, 236);
+  border: 0;
+  color: black;
+  font-size: 20px;
+  padding: 20px;
+  margin-top: 10px;
+  margin-bottom: 20px;
+}
+
+.authWrapper > form > button {
+  width: 600px;
+  border-radius: 5px;
+  background-color: rgb(236, 236, 236);
+  border: 0;
+  color: black;
+  font-size: 20px;
+  font-weight: bold;
+  padding: 20px;
+  margin-top: 30px;
+}

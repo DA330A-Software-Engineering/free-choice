@@ -27,7 +27,7 @@ To install the dependencies, navigate to the root folder of the project and run 
 npm install
 ```
 
-### Running the Development Environment
+### Running app
 To start the development server, use the following command:
 ```
 npm run dev-server
@@ -36,11 +36,3 @@ The application will be available at http://localhost:3000/. If you want to deve
 ```
 npm run dev-client
 ```
-
-### Building a Production Executable
-
-To build a production executable, navigate to the root folder of the project and run the following command:
-```
-npm run build
-```
-This command will build the React application and create an Electron distribution of the built React application.

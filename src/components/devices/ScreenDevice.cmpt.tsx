@@ -85,8 +85,7 @@ const ScreenDevice: FC<ScreenDeviceProps> = ({ device, screenIcon, ghostComponen
           maxLength={16}
           value={inputString}
           onChange={(value) => setInputString(value)}
-          onFocus={onInputFocus}
-        />
+          onFocus={onInputFocus} inputStyle={''}        />
         <Button
           onClick={handleSubmit}
           className="submitButton"

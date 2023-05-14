@@ -19,11 +19,11 @@ const LoginView: FC = () => {
 
   return (
       <>
-        <div>
+        <div className='authWrapper'>
           <h1>Login View</h1>
           <form onSubmit={handleSubmit}>
-            <Input placeholder='email..' onChange={(email: string) => SetEmail(email)}  />
-            <Input placeholder='password..' onChange={(password: string) => SetPassword(password)}  />
+            <Input inputStyle='authInput' placeholder='email..' onChange={(email: string) => SetEmail(email)}  />
+            <Input inputStyle='authInput' placeholder='password..' onChange={(password: string) => SetPassword(password)}  />
             <button>Login</button>
           </form>
         </div>

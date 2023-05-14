@@ -83,12 +83,19 @@ const GroupContainerView: FC<GroupContainerViewProps> = () => {
         
         groups.map((group: IGroup, index: number) => (
           
-          <div key={index} className='deviceGroupStyle'>
-            <h1>{group.name}</h1>
-            <p>{group.description}</p>
-            <RenderDevices group={group} />
-            <button onClick={() => onRemoveGroup(group.id)}>Remove</button>
-            <RenderCorrectGhostDeviceFromGroup group={group} />
+          <div key={index} className='deviceGroupStyle grouplayout'>
+            <div className='groupElement'>
+              <h1>{group.name}</h1>
+              <p>{group.description}</p>
+              <div>
+                <RenderCorrectGhostDeviceFromGroup group={group} />
+              </div>
+              <button onClick={() => onRemoveGroup(group.id)}>Remove Group</button>
+            </div>
+            <div className='deviceInGroupWrapper'>
+              <h1 className='deviceInGroup'>Devices in group</h1>
+              <RenderDevices group={group} />
+            </div>
           </div>
         ))}
       </>
