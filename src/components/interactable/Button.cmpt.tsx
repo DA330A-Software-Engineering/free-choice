@@ -5,7 +5,7 @@ import { Oval } from 'react-loader-spinner';
 
 /** Props for this component */
 type ButtonProps = {
-    onClick: () => void;
+    onClick?: () => void;
     className?: string;
     icon: IconDefinition,
     loading?: boolean,

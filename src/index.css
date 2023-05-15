@@ -304,3 +304,46 @@ input, textarea {
   padding: 20px;
   margin-top: 30px;
 }
+
+.deviceStyle {
+  display: flex;
+  align-items: center;
+}
+
+.sensorValue {
+  display: flex;
+  align-items: center;
+  margin-right: 10px;
+}
+
+.sensorValue p {
+  font-size: 18px;
+  margin-right: 5px;
+}
+
+.deviceStyle.sensorDeviceStyle {
+  width: 80px;
+  height: 50px;
+  font-size: 18px;
+}
+
+.sensorValue {
+  margin-bottom: 2px;
+}
+
+.renderSensorDevicesContainer {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+}
+
+@media (max-width: 768px) {
+  .renderSensorDevicesContainer {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .renderSensorDevicesContainer {
+    grid-template-columns: 1fr;
+  }
+}
