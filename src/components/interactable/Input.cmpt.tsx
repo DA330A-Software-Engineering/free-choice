@@ -8,14 +8,16 @@ type InputProps = {
     onFocus?: () => void; // Add the onFocus prop
     value?: string;
     inputStyle: string;
+    type?: string;
 }
 
 /** Custom input */
-const Input: FC<InputProps> = ({ placeholder, value, onChange, maxLength, onFocus, inputStyle }) => {
+const Input: FC<InputProps> = ({ placeholder, value, onChange, maxLength, onFocus, inputStyle, type }) => {
     return (
         <>
         <input
             className={inputStyle}
+            type= {type}
             placeholder={placeholder}
             value={value} // Pass the value prop to the input element
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => onChange(e.target.value)}

@@ -14,7 +14,9 @@ const SignupView: FC = () => {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
       auth.signup(name, email, password, (res: IAPIResponse) => {
-
+        if (res.msg !== undefined) {
+          alert(res.msg);
+        }
     });
   };
 
@@ -25,7 +27,7 @@ const SignupView: FC = () => {
       <form onSubmit={handleSubmit}>
         <Input inputStyle='authInput' placeholder='name..' onChange={(name: string) => SetName(name)}  />
         <Input inputStyle='authInput' placeholder='email..' onChange={(email: string) => SetEmail(email)}  />
-        <Input inputStyle='authInput' placeholder='password..' onChange={(password: string) => SetPassword(password)}  />
+        <Input type='password'  inputStyle='authInput' placeholder='password..' onChange={(password: string) => SetPassword(password)}  />
         <button>Signup</button>
       </form>
     </div>
