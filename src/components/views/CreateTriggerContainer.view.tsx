@@ -10,32 +10,31 @@ const CreateTriggerContainer: React.FC = () => {
   const [actionDevices, setActionDevices] = useState<IDevice[]>([]);
   const auth = useAuth();
 
-useEffect(() => {
-  getAllDevices((querySnapshot) => {
-    const sensorDevices: IDevice[] = [];
-    const actionDevices: IDevice[] = [];
-    querySnapshot.forEach((doc) => {
-      const deviceData = doc.data();
-      const device: IDevice = {
-        id: doc.id,
-        state: deviceData.state,
-        type: deviceData.type,
-        name: deviceData.name,
-        tag: deviceData.tag,
-        sensorValue: deviceData.sensorValue,
-        description: deviceData.description,
-      };
-      if (device.type === "sensor") {
-        sensorDevices.push(device);
-      } else {
-        actionDevices.push(device); // Devices that are not sensors
-      }
+  useEffect(() => {
+    getAllDevices((querySnapshot) => {
+      const sensorDevices: IDevice[] = [];
+      const actionDevices: IDevice[] = [];
+      querySnapshot.forEach((doc) => {
+        const deviceData = doc.data();
+        const device: IDevice = {
+          id: doc.id,
+          state: deviceData.state,
+          type: deviceData.type,
+          name: deviceData.name,
+          tag: deviceData.tag,
+          sensorValue: deviceData.sensorValue,
+          description: deviceData.description,
+        };
+        if (device.type === "sensor") {
+          sensorDevices.push(device);
+        } else {
+          actionDevices.push(device); // Devices that are not sensors
+        }
+      });
+      setSensorDevices(sensorDevices);
+      setActionDevices(actionDevices);
     });
-    setSensorDevices(sensorDevices);
-    setActionDevices(actionDevices);
-  });
-}, [getAllDevices]);
-
+  }, [getAllDevices]);
 
   console.log("Sensor Devices:", sensorDevices); // Log the sensorDevices state here
 
@@ -47,7 +46,6 @@ useEffect(() => {
 
   return (
     <div className="createTriggerContainer">
-      <h2>Create a new trigger</h2>
       <TriggerForm
         sensorDevices={sensorDevices}
         actionDevices={actionDevices} // New prop

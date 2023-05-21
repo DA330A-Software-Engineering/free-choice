@@ -60,7 +60,11 @@ const TriggerForm: FC<ITriggerFormProps> = ({
   const auth = useAuth();
 
   const handleInputChange = useCallback(
-    (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    (
+      e: React.ChangeEvent<
+        HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+      >
+    ) => {
       const { name, value } = e.target;
       setTrigger((prevState) => ({ ...prevState, [name]: value }));
     },
@@ -203,10 +207,11 @@ const TriggerForm: FC<ITriggerFormProps> = ({
   );
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form className="trigger-form" onSubmit={handleSubmit}>
       <div>
         <label>Sensor Device:</label>
         <select
+          className="trigger-form-select"
           name="deviceId"
           value={trigger.deviceId}
           onChange={handleInputChange}
@@ -223,6 +228,7 @@ const TriggerForm: FC<ITriggerFormProps> = ({
       <div>
         <label>Name:</label>
         <input
+          className="trigger-form-input"
           type="text"
           name="name"
           value={trigger.name}
@@ -231,8 +237,8 @@ const TriggerForm: FC<ITriggerFormProps> = ({
       </div>
       <div>
         <label>Description:</label>
-        <input
-          type="text"
+        <textarea
+          className="trigger-form-textarea"
           name="description"
           value={trigger.description}
           onChange={handleInputChange}
@@ -241,6 +247,7 @@ const TriggerForm: FC<ITriggerFormProps> = ({
       <div>
         <label>Condition:</label>
         <select
+          className="trigger-form-select"
           name="condition"
           value={trigger.condition}
           onChange={handleInputChange}
@@ -252,6 +259,7 @@ const TriggerForm: FC<ITriggerFormProps> = ({
       <div>
         <label>Value:</label>
         <input
+          className="trigger-form-input"
           type="text"
           name="value"
           value={trigger.value}
@@ -261,6 +269,7 @@ const TriggerForm: FC<ITriggerFormProps> = ({
       <div>
         <label>Reset Value:</label>
         <input
+          className="trigger-form-input"
           type="text"
           name="resetValue"
           value={trigger.resetValue}
@@ -270,6 +279,7 @@ const TriggerForm: FC<ITriggerFormProps> = ({
       <div>
         <label>Enabled:</label>
         <input
+          className="trigger-form-checkbox"
           type="checkbox"
           name="enabled"
           checked={trigger.enabled}
@@ -289,6 +299,7 @@ const TriggerForm: FC<ITriggerFormProps> = ({
             <div>
               <label>Device</label>
               <select
+                className="trigger-form-select"
                 name="deviceId"
                 value={action.id}
                 onChange={(e) => handleActionDeviceChange(e, index)}
@@ -305,6 +316,7 @@ const TriggerForm: FC<ITriggerFormProps> = ({
             <div>
               <label>Device Type</label>
               <select
+                className="trigger-form-select"
                 name="type"
                 value={action.type}
                 onChange={(e) => handleActionTypeChange(e, index)}
@@ -325,6 +337,7 @@ const TriggerForm: FC<ITriggerFormProps> = ({
                       <div key={key}>
                         <label>{key}</label>
                         <input
+                          className="trigger-form-input"
                           type={getInputType(value)}
                           name={key}
                           value={(actionStates[index] as any)[key]}
@@ -337,16 +350,27 @@ const TriggerForm: FC<ITriggerFormProps> = ({
                   )
                 : null}
             </div>
-            <button type="button" onClick={() => removeAction(index)}>
+            <button
+              className="trigger-form-button"
+					type="button"
+					
+              onClick={() => removeAction(index)}
+            >
               Remove Action
             </button>
           </div>
         ))}
       </div>
-      <button type="button" onClick={addNewAction}>
+      <button
+        className="trigger-form-button"
+        type="button"
+        onClick={addNewAction}
+      >
         Add Action
       </button>
-      <button type="submit">Create Trigger</button>
+      <button className="trigger-form-button" type="submit">
+        Create Trigger
+      </button>
     </form>
   );
 };
