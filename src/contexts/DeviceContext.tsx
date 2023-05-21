@@ -16,6 +16,14 @@ import { IGroup } from "../components/views/GroupContainer.view";
 const API_ENDPOINT_UPDATE_DEVICE = process.env.API_ENDPOINT_UPDATE_DEVICE || "";
 const API_ENDPOINT_GROUPS = process.env.API_ENDPOINT_GROUPS || "";
 const API_ENDPOINT_SENSORS = process.env.API_ENDPOINT_SENSORS || "";
+const API_ENDPOINT_CREATE_TRIGGER =
+  process.env.API_ENDPOINT_CREATE_TRIGGER || "";
+const API_ENDPOINT_UPDATE_TRIGGER =
+  process.env.API_ENDPOINT_UPDATE_TRIGGER || "";
+const API_ENDPOINT_DELETE_TRIGGER =
+  process.env.API_ENDPOINT_DELETE_TRIGGER || "";
+const API_ENDPOINT_GET_ALL_TRIGGERS =
+  process.env.API_ENDPOINT_GET_ALL_TRIGGERS || "";
 
 /** Interface for Devices */
 export interface IDevice {
@@ -38,6 +46,44 @@ export interface IState {
   reverse?: boolean;
 }
 
+export interface IAction {
+  id: string;
+  groupId?: string;
+  state: Partial<IState>;
+  type: string;
+}
+
+export interface ISendAction {
+  id: string;
+  groupId?: string;
+  state: IState;
+  type: string;
+}
+
+export interface ITrigger {
+  id: string;
+  deviceId: string;
+  condition: "grt" | "lsr";
+  actions: IAction[];
+  name: string;
+  description: string;
+  value: string;
+  resetValue: string;
+  enabled: boolean;
+}
+
+export interface ISendTrigger {
+  id: string;
+  deviceId: string;
+  condition: "grt" | "lsr";
+  name: string;
+  description: string;
+  value: string;
+  resetValue: string;
+  enabled: boolean;
+  actions: ISendAction[];
+}
+
 /** Interface for the DeviceContext */
 export interface IDeviceContext {
   startListening: (
@@ -52,6 +98,10 @@ export interface IDeviceContext {
   ) => void;
   createGroup: (group: IGroup, token: string) => void;
   removeGroupById: (id: string, token: string) => void;
+  createTrigger: (trigger: ITrigger, token: string) => void;
+  updateTrigger: (triggerId: string, trigger: ITrigger, token: string) => void;
+  deleteTrigger: (triggerId: string, token: string) => void;
+  getAllTriggers: (onGetDocuments: { (value: QuerySnapshot): void }) => void;
 }
 
 // Init the device context
@@ -80,6 +130,24 @@ const DeviceContext = createContext<IDeviceContext>({
     throw new Error("Function not implemented.");
   },
   removeGroupById: function (_id: string, _token: string): void {
+    throw new Error("Function not implemented.");
+  },
+  createTrigger: function (_trigger: ITrigger, _token: string): void {
+    throw new Error("Function not implemented.");
+  },
+  updateTrigger: function (
+    _triggerId: string,
+    _trigger: ITrigger,
+    _token: string
+  ): void {
+    throw new Error("Function not implemented.");
+  },
+  deleteTrigger: function (_triggerId: string, _token: string): void {
+    throw new Error("Function not implemented.");
+  },
+  getAllTriggers: function (
+    _onGetDocuments: (value: QuerySnapshot<DocumentData>) => void
+  ): void {
     throw new Error("Function not implemented.");
   },
 });
@@ -169,6 +237,72 @@ export const DeviceContextProvider: FC<{ children: React.ReactElement }> = ({
     });
   };
 
+  const createTrigger = (trigger: ITrigger, token: string) => {
+    console.log("Sending to server: " + JSON.stringify(trigger));
+    fetch(process.env.API_ENDPOINT_CREATE_TRIGGER || "", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-auth-header": token,
+      },
+      body: JSON.stringify(trigger),
+    })
+      .then((res: Response) => {
+        if (!res.ok) {
+          return res.text().then((text) => {
+            throw new Error(text);
+          });
+        }
+        return res.json(); // Parse the response body as JSON
+      })
+      .then(
+        (data) => {
+          console.log("Trigger creation successful");
+          console.log("Response data:", data);
+        },
+        (error) => console.log("Error:", error.message)
+      );
+  };
+
+  const updateTrigger = (
+    triggerId: string,
+    trigger: ITrigger,
+    token: string
+  ) => {
+    console.log("Sending to server: " + JSON.stringify(trigger));
+    fetch(API_ENDPOINT_UPDATE_TRIGGER.replace(":triggerId", triggerId), {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        "x-auth-header": token,
+      },
+      body: JSON.stringify(trigger),
+    }).then((res: Response) => {
+      console.log(res);
+    });
+  };
+
+  const deleteTrigger = (triggerId: string, token: string) => {
+    fetch(API_ENDPOINT_DELETE_TRIGGER.replace(":triggerId", triggerId), {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        "x-auth-header": token,
+      },
+    }).then((res: Response) => {
+      console.log(res);
+    });
+  };
+
+  const getAllTriggers = (onGetDocuments: (value: QuerySnapshot) => void) => {
+    // Get all documents in a collection
+    const db = getFirestore();
+    const ref = collection(db, "triggers");
+    getDocs(ref).then((value: QuerySnapshot) => {
+      onGetDocuments(value);
+    });
+  };
+
   // Returning the context
   return (
     <DeviceContext.Provider
@@ -180,6 +314,10 @@ export const DeviceContextProvider: FC<{ children: React.ReactElement }> = ({
         getGroupsFromEmail,
         createGroup,
         removeGroupById,
+        createTrigger,
+        updateTrigger,
+        deleteTrigger,
+        getAllTriggers,
       }}
     >
       {children}
