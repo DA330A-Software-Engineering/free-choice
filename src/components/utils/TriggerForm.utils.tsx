@@ -1,4 +1,11 @@
-import React, { FC, useState, ChangeEvent, FormEvent } from "react";
+import React, {
+  FC,
+  useState,
+  ChangeEvent,
+  FormEvent,
+  useCallback,
+  useMemo,
+} from "react";
 import {
   ITrigger,
   IDevice,
@@ -45,88 +52,93 @@ const TriggerForm: FC<ITriggerFormProps> = ({
     (IDevice | null)[]
   >([]);
   const [actionStates, setActionStates] = useState<Partial<IState>[]>([]);
-  const deviceTypes = [...new Set(actionDevices.map((device) => device.type))];
+  const deviceTypes = useMemo(
+    () => [...new Set(actionDevices.map((device) => device.type))],
+    [actionDevices]
+  );
   const deviceContext = useDeviceContext();
   const auth = useAuth();
 
-  const handleInputChange = (
-    e: ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => {
-    const { name, value } = e.target;
-    setTrigger((prevState) => ({ ...prevState, [name]: value }));
-  };
+  const handleInputChange = useCallback(
+    (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+      const { name, value } = e.target;
+      setTrigger((prevState) => ({ ...prevState, [name]: value }));
+    },
+    []
+  );
 
-  const handleActionDeviceChange = (
-    e: ChangeEvent<HTMLSelectElement>,
-    index: number
-  ) => {
-    const deviceId = e.target.value;
-    const selectedDevice = actionDevices.find(
-      (device) => device.id === deviceId
-    );
+  const handleActionDeviceChange = useCallback(
+    (e: ChangeEvent<HTMLSelectElement>, index: number) => {
+      const deviceId = e.target.value;
+      const selectedDevice = actionDevices.find(
+        (device) => device.id === deviceId
+      );
 
-    setSelectedActionDevices((prev) => {
-      const copy = [...prev];
-      copy[index] = selectedDevice || null;
-      return copy;
-    });
+      setSelectedActionDevices((prev) => {
+        const copy = [...prev];
+        copy[index] = selectedDevice || null;
+        return copy;
+      });
 
-    setTrigger((prevState) => {
-      const updatedActions = [...prevState.actions];
-      updatedActions[index].id = deviceId;
+      setTrigger((prevState) => {
+        const updatedActions = [...prevState.actions];
+        updatedActions[index].id = deviceId;
 
-      // if the selectedDevice exists, set the type of the action to be the type of the selected device
-      if (selectedDevice) {
-        updatedActions[index].type = selectedDevice.type;
-      }
+        if (selectedDevice) {
+          updatedActions[index].type = selectedDevice.type;
+        }
 
-      return { ...prevState, actions: updatedActions };
-    });
-  };
+        return { ...prevState, actions: updatedActions };
+      });
+    },
+    [actionDevices]
+  );
 
-  const handleActionStateChange = (
-    e: ChangeEvent<HTMLInputElement | HTMLSelectElement>,
-    index: number,
-    stateKey: string
-  ) => {
-    const { value, type } = e.target;
-    const parsedValue =
-      type === "checkbox" ? (e.target as HTMLInputElement).checked : value;
+  const handleActionStateChange = useCallback(
+    (
+      e: ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+      index: number,
+      stateKey: string
+    ) => {
+      const { value, type } = e.target;
+      const parsedValue =
+        type === "checkbox" ? (e.target as HTMLInputElement).checked : value;
 
-    setActionStates((prevStates) => {
-      const newState = [...prevStates];
-      newState[index] = { ...newState[index], [stateKey]: parsedValue };
-      return newState;
-    });
+      setActionStates((prevStates) => {
+        const newState = [...prevStates];
+        newState[index] = { ...newState[index], [stateKey]: parsedValue };
+        return newState;
+      });
 
-    setTrigger((prevState) => {
-      const updatedActions = [...prevState.actions];
-      // directly use the newly updated state here
-      updatedActions[index].state = {
-        ...prevState.actions[index].state,
-        [stateKey]: parsedValue,
-      };
+      setTrigger((prevState) => {
+        const updatedActions = [...prevState.actions];
+        updatedActions[index].state = {
+          ...prevState.actions[index].state,
+          [stateKey]: parsedValue,
+        };
 
-      return { ...prevState, actions: updatedActions };
-    });
-  };
+        return { ...prevState, actions: updatedActions };
+      });
+    },
+    []
+  );
 
-  const handleActionTypeChange = (
-    e: ChangeEvent<HTMLSelectElement>,
-    index: number
-  ) => {
-    const type = e.target.value;
+  const handleActionTypeChange = useCallback(
+    (e: ChangeEvent<HTMLSelectElement>, index: number) => {
+      const type = e.target.value;
 
-    setTrigger((prevState) => {
-      const updatedActions = [...prevState.actions];
-      updatedActions[index].type = type;
-      return { ...prevState, actions: updatedActions };
-    });
-  };
+      setTrigger((prevState) => {
+        const updatedActions = [...prevState.actions];
+        updatedActions[index].type = type;
+        return { ...prevState, actions: updatedActions };
+      });
+    },
+    []
+  );
 
-  const addNewAction = () => {
+  const addNewAction = useCallback(() => {
     const newAction = {
-      id: "", // Keep this empty for now, as it will be updated with the correct device ID later
+      id: "",
       state: {},
       type: "",
     };
@@ -136,52 +148,59 @@ const TriggerForm: FC<ITriggerFormProps> = ({
       actions: [...prevState.actions, newAction],
     }));
 
-    // Add a new slot for an action device without deleting previous selections.
     setSelectedActionDevices((prevSelectedActionDevices) => [
       ...prevSelectedActionDevices,
       null,
     ]);
 
-    // Append a new state to the actionStates array.
     setActionStates((prev) => [...prev, {}]);
-  };
+  }, []);
 
-  const removeAction = (index: number) => {
+  const removeAction = useCallback((index: number) => {
     setTrigger((prevState) => {
       const updatedActions = [...prevState.actions];
       updatedActions.splice(index, 1);
       return { ...prevState, actions: updatedActions };
     });
-  };
+  }, []);
 
-  const handleSubmit = (event: FormEvent) => {
-    event.preventDefault();
+  const handleSubmit = useCallback(
+    (event: FormEvent) => {
+      event.preventDefault();
 
-    const newActions = trigger.actions.map((action, index) => {
-      const selectedDevice = selectedActionDevices[index];
-      const deviceType = selectedDevice?.type || "";
-      const deviceId = selectedDevice?.id || "";
+      const newActions = trigger.actions.map((action, index) => {
+        const selectedDevice = selectedActionDevices[index];
+        const deviceType = selectedDevice?.type || "";
+        const deviceId = selectedDevice?.id || "";
 
-      return {
-        id: deviceId,
-        state: actionStates[index],
-        type: deviceType,
+        return {
+          id: deviceId,
+          state: actionStates[index],
+          type: deviceType,
+        };
+      });
+
+      const newTrigger = {
+        deviceId: trigger.deviceId,
+        name: trigger.name,
+        description: trigger.description,
+        condition: trigger.condition,
+        value: trigger.value,
+        resetValue: trigger.resetValue,
+        enabled: trigger.enabled,
+        actions: newActions,
       };
-    });
 
-    const newTrigger = {
-      deviceId: trigger.deviceId,
-      name: trigger.name,
-      description: trigger.description,
-      condition: trigger.condition,
-      value: trigger.value,
-      resetValue: trigger.resetValue,
-      enabled: trigger.enabled,
-      actions: newActions,
-    };
-
-    deviceContext.createTrigger(newTrigger, auth.getToken());
-  };
+      const token = auth.getToken();
+      if (token) {
+        deviceContext.createTrigger(newTrigger, token);
+      } else {
+        // Handle case where there is no token
+        console.error("No authentication token available");
+      }
+    },
+    [trigger, selectedActionDevices, actionStates, deviceContext, auth]
+  );
 
   return (
     <form onSubmit={handleSubmit}>
@@ -271,7 +290,7 @@ const TriggerForm: FC<ITriggerFormProps> = ({
               <label>Device</label>
               <select
                 name="deviceId"
-                value={action.deviceId}
+                value={action.id}
                 onChange={(e) => handleActionDeviceChange(e, index)}
               >
                 <option value="">Select a device</option>
@@ -301,14 +320,14 @@ const TriggerForm: FC<ITriggerFormProps> = ({
             <div>
               <label>State:</label>
               {selectedActionDevices?.[index]?.state && actionStates[index]
-                ? Object.entries(selectedActionDevices[index].state).map(
+                ? Object.entries(selectedActionDevices[index]?.state || {}).map(
                     ([key, value]) => (
                       <div key={key}>
                         <label>{key}</label>
                         <input
                           type={getInputType(value)}
                           name={key}
-                          value={actionStates[index][key]}
+                          value={(actionStates[index] as any)[key]}
                           onChange={(e) =>
                             handleActionStateChange(e, index, key)
                           }

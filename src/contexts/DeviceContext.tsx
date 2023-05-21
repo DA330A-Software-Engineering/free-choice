@@ -61,7 +61,7 @@ export interface ISendAction {
 }
 
 export interface ITrigger {
-  id: string;
+  id?: string;
   deviceId: string;
   condition: "grt" | "lsr";
   actions: IAction[];
