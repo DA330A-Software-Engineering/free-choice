@@ -336,24 +336,40 @@ const TriggerForm: FC<ITriggerFormProps> = ({
                     ([key, value]) => (
                       <div key={key}>
                         <label>{key}</label>
-                        <input
-                          className="trigger-form-input"
-                          type={getInputType(value)}
-                          name={key}
-                          value={(actionStates[index] as any)[key]}
-                          onChange={(e) =>
-                            handleActionStateChange(e, index, key)
-                          }
-                        />
+                        {selectedActionDevices[index]?.type === "buzzer" &&
+                        key === "tune" ? (
+                          <select
+                            name={key}
+                            value={(actionStates[index] as any)[key]}
+                            onChange={(e) =>
+                              handleActionStateChange(e, index, key)
+                            }
+                          >
+                            <option value="alarm">Alarm</option>
+                            <option value="pirate">
+                              Pirates of the Caribbean
+                            </option>
+                          </select>
+                        ) : (
+                          <input
+                            className="trigger-form-input"
+                            type={getInputType(value)}
+                            name={key}
+                            value={(actionStates[index] as any)[key]}
+                            onChange={(e) =>
+                              handleActionStateChange(e, index, key)
+                            }
+                          />
+                        )}
                       </div>
                     )
                   )
                 : null}
             </div>
+
             <button
               className="trigger-form-button"
-					type="button"
-					
+              type="button"
               onClick={() => removeAction(index)}
             >
               Remove Action
