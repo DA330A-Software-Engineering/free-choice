@@ -321,14 +321,27 @@ input, textarea {
   margin-right: 5px;
 }
 
+.renderSensorDevicesContainer p {
+  margin: 7px;
+}
+
 .deviceStyle.sensorDeviceStyle {
   width: 80px;
   height: 50px;
   font-size: 18px;
 }
 
+
 .sensorValue {
-  margin-bottom: 2px;
+  padding-left: 12px;
+}
+
+.sensorValue > p {
+  margin-right: 5px;
+}
+
+.sensorValue > svg {
+  color: rgb(45, 67, 144);
 }
 
 .renderSensorDevicesContainer {
