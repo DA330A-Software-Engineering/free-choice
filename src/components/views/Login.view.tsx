@@ -13,7 +13,9 @@ const LoginView: FC = () => {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     auth.login(email, password, (res: IAPIResponse) => {
-
+      if (res.msg !== undefined) {
+        alert(res.msg);
+      }
     });
   };
 
@@ -23,7 +25,7 @@ const LoginView: FC = () => {
           <h1>Login View</h1>
           <form onSubmit={handleSubmit}>
             <Input inputStyle='authInput' placeholder='email..' onChange={(email: string) => SetEmail(email)}  />
-            <Input inputStyle='authInput' placeholder='password..' onChange={(password: string) => SetPassword(password)}  />
+            <Input type='password' inputStyle='authInput' placeholder='password..' onChange={(password: string) => SetPassword(password)}  />
             <button>Login</button>
           </form>
         </div>
