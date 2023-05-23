@@ -304,3 +304,123 @@ input, textarea {
   padding: 20px;
   margin-top: 30px;
 }
+
+.deviceStyle {
+  display: flex;
+  align-items: center;
+}
+
+.sensorValue {
+  display: flex;
+  align-items: center;
+  margin-right: 10px;
+}
+
+.sensorValue p {
+  font-size: 18px;
+  margin-right: 5px;
+}
+
+.renderSensorDevicesContainer p {
+  margin: 7px;
+}
+
+.deviceStyle.sensorDeviceStyle {
+  width: 80px;
+  height: 50px;
+  font-size: 18px;
+}
+
+
+.sensorValue {
+  padding-left: 12px;
+}
+
+.sensorValue > p {
+  margin-right: 5px;
+}
+
+.sensorValue > svg {
+  color: rgb(45, 67, 144);
+}
+
+.renderSensorDevicesContainer {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+}
+
+@media (max-width: 768px) {
+  .renderSensorDevicesContainer {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .renderSensorDevicesContainer {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+.trigger-form {
+  font-family: 'Quicksand', sans-serif;
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.trigger-form input,
+.trigger-form textarea,
+.trigger-form select {
+  display: block;
+  width: 100%;
+  height: 40px;
+  padding: 10px;
+  font-family: 'Quicksand', sans-serif;
+  font-size: 16px;
+  border: none;
+  background-color: #f0f0f0;
+  margin-bottom: 20px;
+  box-shadow: none;
+  transition: box-shadow 0.3s ease;
+}
+
+.trigger-form input:focus,
+.trigger-form textarea:focus,
+.trigger-form select:focus {
+  box-shadow: 0 0 5px rgba(0,0,0,0.2);
+  outline: none;
+}
+
+.trigger-form button {
+  width: 100%;
+  height: 40px;
+  background-color: #f0f0f0;
+  border: none;
+  border-radius: 5px;
+  font-family: 'Quicksand', sans-serif;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+  cursor: pointer;
+}
+
+.trigger-form button:hover {
+  background-color: #e0e0e0;
+}
+
+.trigger-form button:active {
+  background-color: #d0d0d0;
+}
+
+.trigger-form .error-message {
+  color: red;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+@media (max-width: 768px) {
+  .trigger-form {
+    padding: 20px 10px;
+  }
+}
