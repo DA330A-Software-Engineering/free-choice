@@ -24,6 +24,7 @@ const API_ENDPOINT_DELETE_TRIGGER =
   process.env.API_ENDPOINT_DELETE_TRIGGER || "";
 const API_ENDPOINT_GET_ALL_TRIGGERS =
   process.env.API_ENDPOINT_GET_ALL_TRIGGERS || "";
+const API_ENDPOINT_ROUTINES = process.env.API_ENDPOINT_ROUTINES || "";
 
 /** Interface for Devices */
 export interface IDevice {
@@ -50,7 +51,7 @@ export interface IAction {
   id: string;
   groupId?: string;
   state: Partial<IState>;
-  type: string;
+  type: "toggle" | "openLock" | "fan" | "screen" | "buzzer";
 }
 
 export interface ISendAction {
@@ -84,6 +85,15 @@ export interface ISendTrigger {
   actions: ISendAction[];
 }
 
+export interface IRoutine {
+  id?: string;
+  name: string;
+  description: string;
+  schedule: string;
+  repeatable: boolean;
+  enabled: boolean;
+  actions: IAction[];
+}
 /** Interface for the DeviceContext */
 export interface IDeviceContext {
   startListening: (
@@ -102,6 +112,19 @@ export interface IDeviceContext {
   updateTrigger: (triggerId: string, trigger: ITrigger, token: string) => void;
   deleteTrigger: (triggerId: string, token: string) => void;
   getAllTriggers: (onGetDocuments: { (value: QuerySnapshot): void }) => void;
+  createRoutine: (routine: IRoutine, token: string) => void;
+  updateRoutine: (
+    routineId: string,
+    routine: IRoutine,
+    token: string,
+    callback: (success: boolean) => void
+  ) => void;
+  deleteRoutine: (routineId: string, token: string) => void;
+  getAllRoutines: (onGetDocuments: { (value: QuerySnapshot): void }) => void;
+  getRoutinesFromEmail: (
+    email: string,
+    onGetDocuments: { (value: QuerySnapshot): void }
+  ) => void;
 }
 
 // Init the device context
@@ -146,6 +169,30 @@ const DeviceContext = createContext<IDeviceContext>({
     throw new Error("Function not implemented.");
   },
   getAllTriggers: function (
+    _onGetDocuments: (value: QuerySnapshot<DocumentData>) => void
+  ): void {
+    throw new Error("Function not implemented.");
+  },
+  createRoutine: function (_routine: IRoutine, _token: string): void {
+    throw new Error("Function not implemented.");
+  },
+  updateRoutine: function (
+    _routineId: string,
+    _routine: IRoutine,
+    _token: string
+  ): void {
+    throw new Error("Function not implemented.");
+  },
+  deleteRoutine: function (_routineId: string, _token: string): void {
+    throw new Error("Function not implemented.");
+  },
+  getAllRoutines: function (
+    _onGetDocuments: (value: QuerySnapshot<DocumentData>) => void
+  ): void {
+    throw new Error("Function not implemented.");
+  },
+  getRoutinesFromEmail: function (
+    _email: string,
     _onGetDocuments: (value: QuerySnapshot<DocumentData>) => void
   ): void {
     throw new Error("Function not implemented.");
@@ -293,11 +340,94 @@ export const DeviceContextProvider: FC<{ children: React.ReactElement }> = ({
       console.log(res);
     });
   };
-
   const getAllTriggers = (onGetDocuments: (value: QuerySnapshot) => void) => {
     // Get all documents in a collection
     const db = getFirestore();
     const ref = collection(db, "triggers");
+    getDocs(ref).then((value: QuerySnapshot) => {
+      onGetDocuments(value);
+    });
+  };
+
+  const createRoutine = (routine: IRoutine, token: string) => {
+    console.log("Sending to server: " + JSON.stringify(routine));
+    fetch(API_ENDPOINT_ROUTINES, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-auth-header": token,
+      },
+      body: JSON.stringify(routine),
+    }).then((res: Response) => {
+      console.log(res);
+    });
+  };
+
+  const updateRoutine = (
+    routineId: string,
+    routine: IRoutine,
+    token: string,
+    callback: (success: boolean) => void
+  ) => {
+    console.log("Sending to server: " + JSON.stringify(routine));
+    fetch(API_ENDPOINT_ROUTINES + "/" + routine.id, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        "x-auth-header": token,
+      },
+      body: JSON.stringify(routine),
+    })
+      .then((res: Response) => {
+        if (!res.ok) {
+          throw new Error(res.statusText);
+        }
+        return res.json();
+      })
+      .then((data: any) => {
+        console.log(data);
+        callback(true);
+      })
+      .catch((error) => {
+        console.error("Error updating routine:", error);
+        callback(false);
+      });
+  };
+
+  const deleteRoutine = (routineId: string, token: string) => {
+    fetch(API_ENDPOINT_ROUTINES + `/${routineId}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        "x-auth-header": token,
+      },
+    })
+      .then((res: Response) => {
+        if (!res.ok) {
+          throw new Error("Failed to delete routine");
+        }
+        console.log("Routine deleted successfully");
+      })
+      .catch((error) => {
+        console.error("Error deleting routine:", error);
+      });
+  };
+
+  const getAllRoutines = (onGetDocuments: (value: QuerySnapshot) => void) => {
+    const db = getFirestore();
+    const ref = collection(db, "routines");
+    const unsubscribe = onSnapshot(ref, (querySnapshot: QuerySnapshot) => {
+      onGetDocuments(querySnapshot);
+    });
+    return () => unsubscribe(); // Unsubscribe from the snapshot listener when the component unmounts
+  };
+
+  const getRoutinesFromEmail = (
+    email: string,
+    onGetDocuments: (value: QuerySnapshot) => void
+  ) => {
+    const db = getFirestore();
+    const ref = collection(db, `profiles/${email}/routines`);
     getDocs(ref).then((value: QuerySnapshot) => {
       onGetDocuments(value);
     });
@@ -318,6 +448,11 @@ export const DeviceContextProvider: FC<{ children: React.ReactElement }> = ({
         updateTrigger,
         deleteTrigger,
         getAllTriggers,
+        createRoutine,
+        updateRoutine,
+        deleteRoutine,
+        getAllRoutines,
+        getRoutinesFromEmail,
       }}
     >
       {children}

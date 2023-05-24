@@ -18,9 +18,10 @@ import SignupView from "./components/views/Signup.view";
 import { FirebaseConfig } from "./configs/FirebaseConfig";
 import { initializeApp } from "firebase/app";
 import { useLocation } from "react-router-dom";
+import CreateTriggerContainer from "./components/views/CreateTriggerContainer.view";
 import GroupContainerView from "./components/views/GroupContainer.view";
 import CreateGroupContainer from "./components/views/CreateGroupContainer.view";
-import CreateTriggerContainer from "./components/views/CreateTriggerContainer.view";
+import RoutineContainerView from "./components/views/RoutineContainer.view";
 
 /** Creates a prive route wrapper, that check if its a authenticated user. router wrapper can also be used for restrict authenticated users from page using restricted variable */
 const PrivateRouteWrapper: FC<{ restricted?: boolean; redirectTo: string }> = ({
@@ -102,9 +103,12 @@ const App: FC = () => {
             >
               <Route index element={<DeviceContainerView />} />
               <Route path="groups" element={<GroupContainerView />} />
-              <Route path="routines" element={<h1>Not implemented</h1>} />
+              <Route path="routines" element={<RoutineContainerView />} />
               <Route path="creategroups" element={<CreateGroupContainer />} />
-              <Route path="createtrigger" element={<CreateTriggerContainer />} />
+              <Route
+                path="createtrigger"
+                element={<CreateTriggerContainer />}
+              />
             </Route>
 
             {/* Test devices without auth path */}
