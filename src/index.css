@@ -404,6 +404,15 @@ input, textarea {
   width: 70%;
 }
 
+.keyboardContainer {
+  padding: 20px;
+}
+
+.authWrapper {
+  padding-bottom: 20px;
+}
+
+
 
 
 

@@ -1,6 +1,6 @@
 // OnScreenKeyboard.util.tsx
 
-import React, { FC, useState, useCallback } from "react";
+import React, { FC, useState, useCallback, useEffect } from "react";
 import SimpleKeyboard from "react-simple-keyboard";
 import "react-simple-keyboard/build/css/index.css";
 
@@ -20,26 +20,28 @@ const OnScreenKeyboard: FC<OnScreenKeyboardProps> = ({
   const [layoutName, setLayoutName] = useState("default");
   const [currentInput, setCurrentInput] = useState(inputValue);
 
+  useEffect(() => {
+    setCurrentInput(inputValue);
+  }, [inputValue]);
+
   const handleShift = () => {
     setLayoutName(layoutName === "default" ? "shift" : "default");
   };
 
   const handleKeyPress = useCallback(
     (button: string) => {
+      let newValue = currentInput; // new line
       if (button === "{shift}" || button === "{lock}") {
         handleShift();
       } else if (button === "{bksp}") {
-        setCurrentInput(currentInput.slice(0, -1));
-        onInput(currentInput.slice(0, -1));
+        newValue = currentInput.slice(0, -1);
       } else if (button === "{space}") {
-        setCurrentInput(currentInput + " ");
-        onInput(currentInput + " ");
-      } else if (button === "{enter}") {
-        // handle enter key press if needed
+        newValue = currentInput + " ";
       } else if (button.length === 1) {
-        setCurrentInput(currentInput + button);
-        onInput(currentInput + button);
+        newValue = currentInput + button;
       }
+      setCurrentInput(newValue);
+      onInput(newValue);
     },
     [layoutName, currentInput, onInput]
   );
