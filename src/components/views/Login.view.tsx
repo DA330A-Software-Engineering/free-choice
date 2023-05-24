@@ -46,7 +46,7 @@ const LoginView: FC = () => {
   return (
     <>
       <div className="authWrapper">
-        <h1>Login View</h1>
+        <h1>Login</h1>
         <form onSubmit={handleSubmit}>
           <Input
             inputStyle="authInput"
