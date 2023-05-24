@@ -37,10 +37,14 @@ const RenderRoutines: FC<RenderRoutinesProps> = ({
     fetchRoutines();
   }, [deviceContext, authContext]);
 
-  const onRemoveRoutine = (id: string | undefined) => {
+  const onRemoveRoutine = async (id: string | undefined) => {
     if (id != undefined) {
-      deviceContext.deleteRoutine(id, authContext.getToken() as string);
-      setRoutines(routines.filter((routine) => routine.id !== id));
+      try {
+        await deviceContext.deleteRoutine(id, authContext.getToken() as string);
+        setRoutines(routines.filter((routine) => routine.id !== id));
+      } catch (error) {
+        console.error("Error deleting routine:", error);
+      }
     }
   };
 

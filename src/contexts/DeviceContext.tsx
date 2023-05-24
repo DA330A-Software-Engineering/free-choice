@@ -86,7 +86,7 @@ export interface ISendTrigger {
 }
 
 export interface IRoutine {
-  id: string;
+  id?: string;
   name: string;
   description: string;
   schedule: string;
@@ -393,24 +393,31 @@ export const DeviceContextProvider: FC<{ children: React.ReactElement }> = ({
   };
 
   const deleteRoutine = (routineId: string, token: string) => {
-    fetch(API_ENDPOINT_ROUTINES.replace(":routineId", routineId), {
+    fetch(API_ENDPOINT_ROUTINES + `/${routineId}`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
         "x-auth-header": token,
       },
-    }).then((res: Response) => {
-      console.log(res);
-    });
+    })
+      .then((res: Response) => {
+        if (!res.ok) {
+          throw new Error("Failed to delete routine");
+        }
+        console.log("Routine deleted successfully");
+      })
+      .catch((error) => {
+        console.error("Error deleting routine:", error);
+      });
   };
 
   const getAllRoutines = (onGetDocuments: (value: QuerySnapshot) => void) => {
-    // Get all documents in a collection
     const db = getFirestore();
     const ref = collection(db, "routines");
-    getDocs(ref).then((value: QuerySnapshot) => {
-      onGetDocuments(value);
+    const unsubscribe = onSnapshot(ref, (querySnapshot: QuerySnapshot) => {
+      onGetDocuments(querySnapshot);
     });
+    return () => unsubscribe(); // Unsubscribe from the snapshot listener when the component unmounts
   };
 
   const getRoutinesFromEmail = (

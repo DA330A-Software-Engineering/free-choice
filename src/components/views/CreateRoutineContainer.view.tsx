@@ -18,13 +18,11 @@ import Button from "../interactable/Button.cmpt";
 interface CreateRoutineContainerProps {
   editingRoutine: IRoutine | null;
   setEditingRoutine: (routine: IRoutine | null) => void;
-  fetchRoutines: () => void;
 }
 
 const CreateRoutineContainer: FC<CreateRoutineContainerProps> = ({
   editingRoutine,
   setEditingRoutine,
-  fetchRoutines,
 }) => {
   const [selectedTime, setSelectedTime] = useState<moment.Moment | undefined>(
     undefined
@@ -47,6 +45,23 @@ const CreateRoutineContainer: FC<CreateRoutineContainerProps> = ({
   const { getAllDevices } = useDeviceContext();
   const auth = useAuth();
   const deviceContext = useDeviceContext();
+
+  useEffect(() => {
+    const unsubscribe = deviceContext.getAllRoutines(
+      (querySnapshot: QuerySnapshot) => {
+        // Handle the updated routines
+        const routines = querySnapshot.docs.map(
+          (doc: QueryDocumentSnapshot) => ({
+            id: doc.id,
+            ...(doc.data() as Omit<IRoutine, "id">),
+          })
+        );
+        // Handle the routines data
+      }
+    );
+
+    return unsubscribe; // Unsubscribe from the snapshot listener when the component unmounts
+  }, []);
 
   const fetchAllDevices = () => {
     getAllDevices((querySnapshot: QuerySnapshot) => {
@@ -89,6 +104,7 @@ const CreateRoutineContainer: FC<CreateRoutineContainerProps> = ({
       resetForm();
     }
   }, [editingRoutine, devices]);
+
   useEffect(() => {
     if (editingRoutine && devices.length > 0) {
       // Set selected device state
@@ -171,11 +187,6 @@ const CreateRoutineContainer: FC<CreateRoutineContainerProps> = ({
     };
 
     try {
-      console.log(
-        editingRoutine
-          ? "Calling updateRoutine function..."
-          : "Calling createRoutine function..."
-      );
       if (editingRoutine) {
         await deviceContext.updateRoutine(
           { ...newRoutine, id: editingRoutine.id },
@@ -183,7 +194,6 @@ const CreateRoutineContainer: FC<CreateRoutineContainerProps> = ({
           (success: boolean) => {
             if (success) {
               console.log("Routine updated successfully!");
-              setEditingRoutine({ ...newRoutine, id: editingRoutine.id });
             } else {
               console.log("Error updating routine.");
             }
@@ -203,7 +213,6 @@ const CreateRoutineContainer: FC<CreateRoutineContainerProps> = ({
       );
       return;
     }
-
     resetForm();
   };
 
