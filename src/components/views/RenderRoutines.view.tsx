@@ -21,8 +21,9 @@ const RenderRoutines: FC<RenderRoutinesProps> = ({
   const [currentPage, setCurrentPage] = useState(0);
   const routinesPerPage = 4;
 
-  useEffect(() => {
-    deviceContext.getAllRoutines((querySnapshot) => {
+  const fetchRoutines = () => {
+    const email = authContext.getEmail(); // Make sure authContext is in the dependency array
+    deviceContext.getRoutinesFromEmail(email, (querySnapshot) => {
       const fetchedRoutines: IRoutine[] = [];
       querySnapshot.forEach((doc) => {
         const routineData = doc.data() as IRoutine;
@@ -30,22 +31,15 @@ const RenderRoutines: FC<RenderRoutinesProps> = ({
       });
       setRoutines(fetchedRoutines);
     });
+  };
 
-    const email = authContext.getEmail();
-    deviceContext.getRoutinesFromEmail(email, (value: QuerySnapshot) => {
-      const newRoutines: IRoutine[] = [];
-      value.forEach((doc: QueryDocumentSnapshot) => {
-        const routine = doc.data() as IRoutine;
-        routine.id = doc.id;
-        newRoutines.push(routine);
-      });
-      setRoutines(newRoutines);
-    });
+  useEffect(() => {
+    fetchRoutines();
   }, [deviceContext, authContext]);
 
   const onRemoveRoutine = (id: string | undefined) => {
     if (id != undefined) {
-      deviceContext.removeRoutineById(id, authContext.getToken() as string);
+      deviceContext.deleteRoutine(id, authContext.getToken() as string);
       setRoutines(routines.filter((routine) => routine.id !== id));
     }
   };
@@ -102,67 +96,68 @@ const RenderRoutines: FC<RenderRoutinesProps> = ({
     }
   };
 
-return (
-  <>
-    <h2>My Routines:</h2>
-    <div className="routine-grid">
-      {routines
-        .slice(
-          currentPage * routinesPerPage,
-          (currentPage + 1) * routinesPerPage
-        )
-        .map((routine: IRoutine, index: number) => {
-          return (
-            <div
-              key={index}
-              className={`routineStyle${
-                routine.enabled ? " enabledRoutine" : ""
-              }`}
-            >
-              <div className="routineHeader">
-                <div className="nameAndStatus">
-                  <h1>{routine.name}</h1>
-                  <span
-                    className={routine.enabled ? "activeText" : "inactiveText"}
-                  >
-                    {routine.enabled ? "Active" : "Inactive"}
-                  </span>
+  return (
+    <>
+      <h2>My Routines:</h2>
+      <div className="routine-grid">
+        {routines
+          .slice(
+            currentPage * routinesPerPage,
+            (currentPage + 1) * routinesPerPage
+          )
+          .map((routine: IRoutine, index: number) => {
+            return (
+              <div
+                key={index}
+                className={`routineStyle${
+                  routine.enabled ? " enabledRoutine" : ""
+                }`}
+              >
+                <div className="routineHeader">
+                  <div className="nameAndStatus">
+                    <h1>{routine.name}</h1>
+                    <span
+                      className={
+                        routine.enabled ? "activeText" : "inactiveText"
+                      }
+                    >
+                      {routine.enabled ? "Active" : "Inactive"}
+                    </span>
+                  </div>
+                </div>
+                <p>Description: {routine.description}</p>
+                <p>Time: {parseSchedule(routine.schedule).time}</p>
+                <p>Day(s): {parseSchedule(routine.schedule).days.join(", ")}</p>
+                <div className="buttonContainer">
+                  <button onClick={() => onEditRoutine(routine)}>Edit</button>
+                  <button onClick={() => onRemoveRoutine(routine.id)}>
+                    Remove
+                  </button>
+                  <button onClick={() => onToggleEnabled(routine)}>
+                    {routine.enabled ? "Disable" : "Enable"}
+                  </button>
                 </div>
               </div>
-              <p>Description: {routine.description}</p>
-              <p>Time: {parseSchedule(routine.schedule).time}</p>
-              <p>Day(s): {parseSchedule(routine.schedule).days.join(", ")}</p>
-              <div className="buttonContainer">
-                <button onClick={() => onEditRoutine(routine)}>Edit</button>
-                <button onClick={() => onRemoveRoutine(routine.id)}>
-                  Remove
-                </button>
-                <button onClick={() => onToggleEnabled(routine)}>
-                  {routine.enabled ? "Disable" : "Enable"}
-                </button>
-              </div>
-            </div>
-          );
-        })}
-    </div>
-    <div className="pagination">
-      <button
-        disabled={currentPage === 0}
-        onClick={() => handlePageChange("prev")}
-      >
-        Prev
-      </button>
-      <span>Page {currentPage + 1}</span>
-      <button
-        disabled={(currentPage + 1) * routinesPerPage >= routines.length}
-        onClick={() => handlePageChange("next")}
-      >
-        Next
-      </button>
-    </div>
-  </>
-);
-
+            );
+          })}
+      </div>
+      <div className="pagination">
+        <button
+          disabled={currentPage === 0}
+          onClick={() => handlePageChange("prev")}
+        >
+          Prev
+        </button>
+        <span>Page {currentPage + 1}</span>
+        <button
+          disabled={(currentPage + 1) * routinesPerPage >= routines.length}
+          onClick={() => handlePageChange("next")}
+        >
+          Next
+        </button>
+      </div>
+    </>
+  );
 };
 
 export default RenderRoutines;

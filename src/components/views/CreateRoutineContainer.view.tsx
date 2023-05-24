@@ -18,11 +18,13 @@ import Button from "../interactable/Button.cmpt";
 interface CreateRoutineContainerProps {
   editingRoutine: IRoutine | null;
   setEditingRoutine: (routine: IRoutine | null) => void;
+  fetchRoutines: () => void;
 }
 
 const CreateRoutineContainer: FC<CreateRoutineContainerProps> = ({
   editingRoutine,
   setEditingRoutine,
+  fetchRoutines,
 }) => {
   const [selectedTime, setSelectedTime] = useState<moment.Moment | undefined>(
     undefined
