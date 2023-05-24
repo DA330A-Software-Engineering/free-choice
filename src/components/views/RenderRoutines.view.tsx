@@ -71,24 +71,32 @@ const RenderRoutines: FC<RenderRoutinesProps> = ({
     return { time, days };
   };
 
-  const onToggleEnabled = (routine: IRoutine) => {
+  const onToggleEnabled = async (routine: IRoutine) => {
     const updatedRoutine = { ...routine, enabled: !routine.enabled };
-    deviceContext.updateRoutine(
-      // Change this line
-      updatedRoutine,
-      authContext.getToken() as string,
-      (success) => {
-        if (success) {
-          setRoutines(
-            routines.map((r) =>
-              r.id === updatedRoutine.id ? updatedRoutine : r
-            )
-          );
-        } else {
-          console.error("Error updating routine");
-        }
+    try {
+      if (routine.id) {
+        await deviceContext.updateRoutine(
+          routine.id,
+          updatedRoutine,
+          authContext.getToken() as string,
+          (success: boolean) => {
+            if (success) {
+              setRoutines((routines) =>
+                routines.map((r) =>
+                  r.id === updatedRoutine.id ? updatedRoutine : r
+                )
+              );
+            } else {
+              console.error("Error updating routine");
+            }
+          }
+        );
+      } else {
+        console.error("Routine ID is undefined");
       }
-    );
+    } catch (error) {
+      console.error("Error updating routine:", error);
+    }
   };
 
   // Pagination handler

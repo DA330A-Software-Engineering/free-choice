@@ -51,7 +51,7 @@ export interface IAction {
   id: string;
   groupId?: string;
   state: Partial<IState>;
-  type: string;
+  type: "toggle" | "openLock" | "fan" | "screen" | "buzzer";
 }
 
 export interface ISendAction {
@@ -114,6 +114,7 @@ export interface IDeviceContext {
   getAllTriggers: (onGetDocuments: { (value: QuerySnapshot): void }) => void;
   createRoutine: (routine: IRoutine, token: string) => void;
   updateRoutine: (
+    routineId: string,
     routine: IRoutine,
     token: string,
     callback: (success: boolean) => void
@@ -363,6 +364,7 @@ export const DeviceContextProvider: FC<{ children: React.ReactElement }> = ({
   };
 
   const updateRoutine = (
+    routineId: string,
     routine: IRoutine,
     token: string,
     callback: (success: boolean) => void

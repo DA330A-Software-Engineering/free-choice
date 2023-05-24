@@ -189,6 +189,7 @@ const CreateRoutineContainer: FC<CreateRoutineContainerProps> = ({
     try {
       if (editingRoutine) {
         await deviceContext.updateRoutine(
+          editingRoutine.id ?? "",
           { ...newRoutine, id: editingRoutine.id },
           auth.getToken() as string,
           (success: boolean) => {
