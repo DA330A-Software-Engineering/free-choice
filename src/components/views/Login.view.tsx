@@ -51,6 +51,7 @@ const LoginView: FC = () => {
           <Input
             inputStyle="authInput"
             placeholder="email.."
+            className="authInput"
             value={email}
             onFocus={handleEmailInputFocus}
             onChange={handleEmailInputChange}
@@ -58,6 +59,7 @@ const LoginView: FC = () => {
           <Input
             type="password"
             inputStyle="authInput"
+            className="authInput"
             placeholder="password.."
             value={password}
             onFocus={handlePasswordInputFocus}

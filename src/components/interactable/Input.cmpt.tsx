@@ -19,10 +19,12 @@ const Input: FC<InputProps> = ({
   onChange,
   maxLength,
   onFocus,
+  type,
 }) => {
   return (
     <>
       <input
+        type={type}
         placeholder={placeholder}
         value={value} // Pass the value prop to the input element
         onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
